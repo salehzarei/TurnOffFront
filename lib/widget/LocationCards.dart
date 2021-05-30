@@ -1,86 +1,147 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class LocationCards extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Container(
-        height: 208,
-        margin: EdgeInsets.all(08),
-        child: Column(
-          children: [
-            Row(
+    return Column(
+      children: [
+        Card(
+          child: Container(
+            //  height: 208,
+            margin: EdgeInsets.all(10),
+            child: Column(
               children: [
-                Icon(Icons.home),
-                Text('محل سکونت خودم'),
-                Spacer(),
-                Text(
-                  'اطلاع رسانی فعال',
+                Row(
+                  children: [
+                    Icon(
+                      Icons.home,
+                      color: Colors.grey,
+                      size: 15,
+                    ),
+                    Text(
+                      'محل سکونت خودم',
+                      style: Get.textTheme.headline3,
+                    ),
+                    Spacer(),
+                    Text(
+                      'اطلاع رسانی فعال',
+                      style: Get.textTheme.bodyText1,
+                    ),
+                    Icon(
+                      Icons.notifications_active_rounded,
+                      color: Colors.green,
+                      size: 16,
+                    ),
+                  ],
                 ),
-                Icon(Icons.notifications_active_rounded),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 15),
+                  child: Text(
+                    'خراسان رضوی، مشهد، ناحیه 12، رحمانیه 19، کوچه فرعی',
+                    style: Get.textTheme.headline6,
+                    overflow: TextOverflow.clip,
+                    maxLines: 1,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 9),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.notifications_active_rounded,
+                        color: Colors.grey,
+                        size: 15,
+                      ),
+                      Text(
+                        'اعلان های درخواستی',
+                        style: Get.textTheme.headline3,
+                      ),
+                      Spacer(),
+                    ],
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Column(
+                      children: [
+                        CircleAvatar(
+                            backgroundColor: Colors.white,
+                            radius: 15,
+                            backgroundImage:
+                                AssetImage('assets/images/bargh.png')),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 5.0),
+                          child: Text(
+                            'قطعی برق',
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        )
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        CircleAvatar(
+                            backgroundColor: Colors.white,
+                            radius: 15,
+                            backgroundImage:
+                                AssetImage('assets/images/ab.png')),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 5.0),
+                          child: Text('قطعی آب' , style: TextStyle(fontSize: 12)),
+                        )
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        CircleAvatar(
+                            backgroundColor: Colors.white,
+                            radius: 15,
+                            backgroundImage:
+                                AssetImage('assets/images/gaz.png')),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 5.0),
+                          child: Text('قطعی گاز' , style: TextStyle(fontSize: 12)),
+                        )
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        CircleAvatar(
+                            backgroundColor: Colors.white,
+                            radius: 15,
+                            backgroundImage:
+                                AssetImage('assets/images/mokhaberat.png')),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 5.0),
+                          child: Text('قطعی تلفن' , style: TextStyle(fontSize: 12)),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 15.0),
+                  child: Text('مشاهده وضعیت' , style: TextStyle(color: Colors.blueGrey),),
+                ),
               ],
             ),
-            Text('خراسان رضوی، مشهد، ناحیه 12، رحمانیه 19، کوچه فرعی'),
-            Row(
-              children: [
-                Icon(Icons.notifications_active_rounded),
-                Text('اعلان های درخواستی'),
-                Spacer(),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Column(
-                  children: [
-                    CircleAvatar(
-                        backgroundColor: Colors.white,
-                        backgroundImage: AssetImage('assets/images/bargh.png')),
-                    Text('قطعی برق')
-                  ],
-                ),
-                Column(
-                  children: [
-                    CircleAvatar(
-                        backgroundColor: Colors.white,
-                        backgroundImage: AssetImage('assets/images/ab.png')),
-                    Text('قطعی آب')
-                  ],
-                ),
-                Column(
-                  children: [
-                    CircleAvatar(
-                        backgroundColor: Colors.white,
-                        backgroundImage: AssetImage('assets/images/gaz.png')),
-                    Text('قطعی گاز')
-                  ],
-                ),
-                Column(
-                  children: [
-                    CircleAvatar(
-                        backgroundColor: Colors.white,
-                        backgroundImage:
-                            AssetImage('assets/images/mokhaberat.png')),
-                    Text('قطعی تلفن')
-                  ],
-                ),
-              ],
-            ),
-            Text('مشاهده وضعیت'),
-            Transform.translate(
-              offset: Offset(0.0, 25),
+          ),
+        ),
+        Transform.translate(
+              offset: Offset(0.0, -16),
               child: CircleAvatar(
-                radius: 18,
+                radius: 15,
                 backgroundColor: Colors.white,
                 child: Icon(
-                  Icons.arrow_circle_down_outlined,
-                  size: 28,
+                  Icons.info_outline,
+                  size: 25,
+                  color: Colors.blueGrey,
                 ),
               ),
             )
-          ],
-        ),
-      ),
+      ],
     );
   }
 }
