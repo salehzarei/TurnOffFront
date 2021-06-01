@@ -54,7 +54,7 @@ class LocationCards extends StatelessWidget {
                         size: 15,
                       ),
                       Text(
-                        'اعلان های درخواستی',
+                        'اعلان های قطعی برق در روز جاری',
                         style: Get.textTheme.headline3,
                       ),
                       Spacer(),
@@ -62,7 +62,7 @@ class LocationCards extends StatelessWidget {
                   ),
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Column(
                       children: [
@@ -80,67 +80,84 @@ class LocationCards extends StatelessWidget {
                         )
                       ],
                     ),
-                    Column(
-                      children: [
-                        CircleAvatar(
-                            backgroundColor: Colors.white,
-                            radius: 15,
-                            backgroundImage:
-                                AssetImage('assets/images/ab.png')),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 5.0),
-                          child: Text('قطعی آب' , style: TextStyle(fontSize: 12)),
-                        )
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        CircleAvatar(
-                            backgroundColor: Colors.white,
-                            radius: 15,
-                            backgroundImage:
-                                AssetImage('assets/images/gaz.png')),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 5.0),
-                          child: Text('قطعی گاز' , style: TextStyle(fontSize: 12)),
-                        )
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        CircleAvatar(
-                            backgroundColor: Colors.white,
-                            radius: 15,
-                            backgroundImage:
-                                AssetImage('assets/images/mokhaberat.png')),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 5.0),
-                          child: Text('قطعی تلفن' , style: TextStyle(fontSize: 12)),
-                        )
-                      ],
-                    ),
+                    SizedBox(width: 10,),
+                    Row(children: [
+                      Text(' امروز شنبه 1400/3/10',
+                          style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              )),
+                              Text(' از ساعت 15:30 الی 16:30',
+                          style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red))
+                    ]),
+
+                    // Column(
+                    //   children: [
+                    //     CircleAvatar(
+                    //         backgroundColor: Colors.white,
+                    //         radius: 15,
+                    //         backgroundImage:
+                    //             AssetImage('assets/images/ab.png')),
+                    //     Padding(
+                    //       padding: const EdgeInsets.only(top: 5.0),
+                    //       child: Text('قطعی آب' , style: TextStyle(fontSize: 12)),
+                    //     )
+                    //   ],
+                    // ),
+                    // Column(
+                    //   children: [
+                    //     CircleAvatar(
+                    //         backgroundColor: Colors.white,
+                    //         radius: 15,
+                    //         backgroundImage:
+                    //             AssetImage('assets/images/gaz.png')),
+                    //     Padding(
+                    //       padding: const EdgeInsets.only(top: 5.0),
+                    //       child: Text('قطعی گاز' , style: TextStyle(fontSize: 12)),
+                    //     )
+                    //   ],
+                    // ),
+                    // Column(
+                    //   children: [
+                    //     CircleAvatar(
+                    //         backgroundColor: Colors.white,
+                    //         radius: 15,
+                    //         backgroundImage:
+                    //             AssetImage('assets/images/mokhaberat.png')),
+                    //     Padding(
+                    //       padding: const EdgeInsets.only(top: 5.0),
+                    //       child: Text('قطعی تلفن' , style: TextStyle(fontSize: 12)),
+                    //     )
+                    //   ],
+                    // ),
                   ],
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 15.0),
-                  child: Text('مشاهده وضعیت' , style: TextStyle(color: Colors.blueGrey),),
+                  child: Text(
+                    'مشاهده اعلان های هفته جاری',
+                    style: TextStyle(color: Colors.blueGrey),
+                  ),
                 ),
               ],
             ),
           ),
         ),
         Transform.translate(
-              offset: Offset(0.0, -16),
-              child: CircleAvatar(
-                radius: 15,
-                backgroundColor: Colors.white,
-                child: Icon(
-                  Icons.info_outline,
-                  size: 25,
-                  color: Colors.blueGrey,
-                ),
-              ),
-            )
+          offset: Offset(0.0, -16),
+          child: CircleAvatar(
+            radius: 15,
+            backgroundColor: Colors.white,
+            child: Icon(
+              Icons.info_outline,
+              size: 25,
+              color: Colors.blueGrey,
+            ),
+          ),
+        )
       ],
     );
   }

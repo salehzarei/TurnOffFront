@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1038600028874",
+    "project_id": "turnoff-d4a5b",
+    "storage_bucket": "turnoff-d4a5b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1038600028874:android:d4b72607bbe1fb63b7aa33",
+        "android_client_info": {
+          "package_name": "com.example.turnoff"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1038600028874-jtphq2ep857i09m1698fnt6vtt6acjv1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOCephu9CnFCtJ1GSr6C6lTC9CEuARCx8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1038600028874-jtphq2ep857i09m1698fnt6vtt6acjv1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

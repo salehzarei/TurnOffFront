@@ -9,6 +9,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TurnOffController c = Get.put(TurnOffController());
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -20,20 +21,21 @@ class HomePage extends StatelessWidget {
               color: Get.theme.iconTheme.color,
             )),
         actions: [
-         Padding(
-           padding: const EdgeInsets.only(right:8.0),
-           child: Row(children: [
-               Text(
-              'اطلاع رسانی فعال',
-              style: TextStyle(color: Colors.green , fontSize: 16),
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: Row(
+              children: [
+                Text(
+                  'اطلاع رسانی فعال',
+                  style: TextStyle(color: Colors.green, fontSize: 16),
+                ),
+                Icon(
+                  Icons.power_settings_new_outlined,
+                  color: Colors.green,
+                ),
+              ],
             ),
-            Icon(
-              Icons.power_settings_new_outlined,
-              color: Colors.green,
-            ),
-           ],),
-         )
-         
+          )
         ],
       ),
       body: Directionality(
@@ -59,7 +61,7 @@ class HomePage extends StatelessWidget {
                 ],
               ),
               Text(
-                '09154127181',
+                '09215204600',
                 style: Get.textTheme.headline1,
               ),
               Row(
@@ -78,17 +80,18 @@ class HomePage extends StatelessWidget {
                   ))
                 ],
               ),
-              Container(
-                height: Get.height * 0.78,
-                child: ListView(
-                  children: [
-                    GestureDetector(
-                        onTap: () => c.informationDialog(),
-                        child: LocationCards()),
-                    LocationCards(),
-                    LocationCards(),
-                    LocationCards()
-                  ],
+              Expanded(
+                child: Container(
+                  child: ListView(
+                    children: [
+                      GestureDetector(
+                          onTap: () => c.informationDialog(),
+                          child: LocationCards()),
+                      LocationCards(),
+                      LocationCards(),
+                      LocationCards()
+                    ],
+                  ),
                 ),
               )
             ],
