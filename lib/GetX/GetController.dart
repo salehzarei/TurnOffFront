@@ -1,16 +1,98 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
+import 'package:turnoff/Model/UserProfileModel.dart';
+import 'package:location/location.dart';
+import 'ServerHandler.dart';
 
 class TurnOffController extends GetxController {
   final todayindex = DateTime.now().weekday;
   final isReciveMesseage = false.obs;
   final isReciveNotification = true.obs;
   final reminderTime = 15.obs;
+  final isloadingData = true.obs;
+  final userCurrentLocation = Location().obs;
+  final userData = UserProfile(
+          userphone: "",
+          addresses: [],
+          charge: 0,
+          notetype: [],
+          remindtime: 15,
+          selectedcompany: [],
+          status: false)
+      .obs;
+
+// bool _serviceEnabled;
+// PermissionStatus _permissionGranted;
+// LocationData _locationData;
+
+// _serviceEnabled = await location.serviceEnabled();
+// if (!_serviceEnabled) {
+//   _serviceEnabled = await location.requestService();
+//   if (!_serviceEnabled) {
+//     return;
+//   }
+// }
+
+// _permissionGranted = await location.hasPermission();
+// if (_permissionGranted == PermissionStatus.denied) {
+//   _permissionGranted = await location.requestPermission();
+//   if (_permissionGranted != PermissionStatus.granted) {
+//     return;
+//   }
+// }
+
+// _locationData = await location.getLocation();
 
   void changeRemiderTime(int value) {
     reminderTime(value);
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    loadUserData().whenComplete(() => upDateUserSetting());
+  }
+
+  Future loadUserData() async {
+    isloadingData(true);
+    final response = await TurnOffConnect().getUserProfileData();
+    print("Is Loading Data: " + response.toString());
+    // print(UserProfile.fromJson(jsonDecode(response)));
+    userData(UserProfile.fromJson(jsonDecode(response)));
+    isloadingData(false);
+  }
+
+  void upDateUserSetting() {
+    switch (userData.value.remindtime) {
+      case 15:
+        reminderTime(15);
+        break;
+      case 30:
+        reminderTime(30);
+        break;
+      case 60:
+        reminderTime(60);
+        break;
+      case 120:
+        reminderTime(120);
+        break;
+      default:
+    }
+
+    if (userData.value.notetype.contains("notification"))
+      isReciveNotification(true);
+    if (userData.value.notetype.contains("sms")) isReciveMesseage(true);
+  }
+
+  addNewLoaction() async {
+    LocationData _locationData = await userCurrentLocation.value.getLocation();
+    print(_locationData);
+    return Get.defaultDialog(
+        title: 'اضافه کردن آدرس جدید', content: Text("data"));
   }
 
   informationDialog() => Get.defaultDialog(
@@ -21,7 +103,7 @@ class TurnOffController extends GetxController {
         textDirection: TextDirection.rtl,
         child: Container(
           width: Get.width * 0.90,
-          height: Get.height * 0.45,
+          height: Get.height * 0.55,
           child: ListView(
             scrollDirection: Axis.horizontal,
             children: [

@@ -31,7 +31,7 @@ class SettingPage extends StatelessWidget {
                   child: Column(
                     children: [
                       Text(
-                        '09154127181',
+                        x.userData.value.userphone,
                         style: Get.textTheme.headline1,
                       ),
                       Row(
@@ -60,20 +60,20 @@ class SettingPage extends StatelessWidget {
                               padding: EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 10),
                               // color: Colors.amber,
-                              child: ListView(
-                                physics: BouncingScrollPhysics(),
-                                children: [
-                                  AddressCard(),
-                                  AddressCard(),
-                                  AddressCard(),
-                                  TextButton(
-                                      onPressed: () {},
-                                      child: Text("افزودن آدرس جدید",
-                                          style: TextStyle(
-                                              color: Colors.blue,
-                                              fontSize: 20)))
-                                ],
-                              ))),
+                              child: ListView.builder(
+                                  physics: BouncingScrollPhysics(),
+                                  itemCount: x.userData.value.addresses.length,
+                                  itemBuilder: (context, index) {
+                                    return AddressCard(
+                                      userAddress:
+                                          x.userData.value.addresses[index],
+                                    );
+                                  }))),
+                      Visibility(
+                        visible: x.userData.value.addresses.length < 4,
+                          child: TextButton(
+                              onPressed: () => x.addNewLoaction(),
+                              child: Text("اضافه کردن آدرس جدید"))),
                       Expanded(
                           flex: 3,
                           child: Container(
@@ -145,8 +145,8 @@ class SettingPage extends StatelessWidget {
                                       Radio(
                                           value: 15,
                                           groupValue: x.reminderTime.value,
-                                          onChanged: (v)=> x.changeRemiderTime(15)
-                                          ),
+                                          onChanged: (v) =>
+                                              x.changeRemiderTime(15)),
                                       Text(
                                         '15',
                                         style: TextStyle(fontSize: 20),
@@ -154,19 +154,22 @@ class SettingPage extends StatelessWidget {
                                       Radio(
                                           value: 30,
                                           groupValue: x.reminderTime.value,
-                                          onChanged: (v)=>x.changeRemiderTime(30)),
+                                          onChanged: (v) =>
+                                              x.changeRemiderTime(30)),
                                       Text('30',
                                           style: TextStyle(fontSize: 20)),
                                       Radio(
                                           value: 60,
                                           groupValue: x.reminderTime.value,
-                                          onChanged: (v)=>x.changeRemiderTime(60)),
+                                          onChanged: (v) =>
+                                              x.changeRemiderTime(60)),
                                       Text('60',
                                           style: TextStyle(fontSize: 20)),
                                       Radio(
                                           value: 120,
                                           groupValue: x.reminderTime.value,
-                                          onChanged: (v)=>x.changeRemiderTime(120)),
+                                          onChanged: (v) =>
+                                              x.changeRemiderTime(120)),
                                       Text('120',
                                           style: TextStyle(fontSize: 20)),
                                     ],

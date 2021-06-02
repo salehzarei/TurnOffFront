@@ -1,0 +1,38 @@
+{
+    "userphone": "09154127181",
+    "status": true,
+    "notetype": [
+      "notification",
+      "sms"
+    ],
+    "selectedcompany": [
+      "bargh",
+      "aab"
+    ],
+    "charge": 10000,
+    "remindtime": 60,
+    "addresses": [
+      {
+        "province": "خراسان رضوی",
+        "city": "مشهد",
+        "local": "منطقه 12",
+        "street": "رحمانیه 12",
+        "title": "منزل خودم",
+        "location": {
+          "lat": "36.270230515789",
+          "lon": "59.57466902182536"
+        }
+      },
+      {
+        "province": "خراسان رضوی",
+        "city": "مشهد",
+        "local": "منطقه 12، الهیه",
+        "street": "خدادای 16",
+        "title": "منزل مادرم",
+        "location": {
+          "lat": "36.270230515789",
+          "lon": "59.57466902182536"
+        }
+      }
+    ]
+  }
