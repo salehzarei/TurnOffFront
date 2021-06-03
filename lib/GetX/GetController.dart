@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
+import 'package:turnoff/Model/NeshanModel.dart';
 import 'package:turnoff/Model/UserProfileModel.dart';
 import 'package:location/location.dart';
 import 'ServerHandler.dart';
@@ -91,8 +92,12 @@ class TurnOffController extends GetxController {
   addNewLoaction() async {
     LocationData _locationData = await userCurrentLocation.value.getLocation();
     print(_locationData);
+    Response locationName = await TurnOffConnect().getLocationNameData(
+        _locationData.latitude.toString(), _locationData.longitude.toString());
+    print(locationName.body);
+    NeshanModel neshani = NeshanModel.fromJson(jsonDecode(locationName.body));
     return Get.defaultDialog(
-        title: 'اضافه کردن آدرس جدید', content: Text("data"));
+        title: 'اضافه کردن آدرس جدید', content: Text(locationName.toString()));
   }
 
   informationDialog() => Get.defaultDialog(

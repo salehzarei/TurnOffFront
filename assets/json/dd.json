@@ -1,0 +1,23 @@
+{
+    "status": "OK",
+    "neighbourhood": "کوی المهدی",
+    "municipality_zone": "7",
+    "state": "استان خراسان رضوی",
+    "city": "مشهد",
+    "in_odd_even_zone": false,
+    "addresses": [
+        {
+            "formatted": "بلوار صبا",
+            "components": [
+                {
+                    "name": "بلوار صبا",
+                    "type": "secondary"
+                }
+            ]
+        }
+    ],
+    "route_name": "بلوار صبا",
+    "route_type": "secondary",
+    "place": "کلینیک تخصصی شمار ه دو مشهد",
+    "formatted_address": "استان خراسان رضوی، مشهد، کوی المهدی، بلوار صبا، کلینیک تخصصی شمار ه دو مشهد"
+}
