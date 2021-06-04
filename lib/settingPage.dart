@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:turnoff/GetX/GetController.dart';
 import 'package:turnoff/widget/AddressCard.dart';
 
+import 'widget/Map.dart';
+
 class SettingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -70,9 +72,13 @@ class SettingPage extends StatelessWidget {
                                     );
                                   }))),
                       Visibility(
-                        visible: x.userData.value.addresses.length < 4,
+                          visible: x.userData.value.addresses.length < 4,
                           child: TextButton(
-                              onPressed: () => x.addNewLoaction(),
+                              onPressed: () {
+                                x.getDeviceLocation().whenComplete(
+                                      () => Get.to(TurnOffMap()),
+                                    );
+                              },
                               child: Text("اضافه کردن آدرس جدید"))),
                       Expanded(
                           flex: 3,

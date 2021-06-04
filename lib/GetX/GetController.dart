@@ -1,12 +1,12 @@
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
 import 'package:turnoff/Model/NeshanModel.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:turnoff/Model/UserProfileModel.dart';
-import 'package:location/location.dart';
+import 'package:universe/universe.dart';
 import 'ServerHandler.dart';
 
 class TurnOffController extends GetxController {
@@ -15,7 +15,31 @@ class TurnOffController extends GetxController {
   final isReciveNotification = true.obs;
   final reminderTime = 15.obs;
   final isloadingData = true.obs;
-  final userCurrentLocation = Location().obs;
+  final neshani = NeshanModel(
+          status: "",
+          neighbourhood: "",
+          municipalityZone: "",
+          state: "",
+          city: "",
+          inOddEvenZone: false,
+          addresses: [],
+          routeName: "",
+          routeType: "",
+          place: "",
+          formattedAddress: "")
+      .obs;
+
+  final userPosition = Position(
+          longitude: 0.0,
+          latitude: 0.0,
+          timestamp: DateTime.now(),
+          accuracy: 0.0,
+          altitude: 0.0,
+          heading: 0.0,
+          speed: 0.0,
+          speedAccuracy: 0.0)
+      .obs;
+
   final userData = UserProfile(
           userphone: "",
           addresses: [],
@@ -25,31 +49,65 @@ class TurnOffController extends GetxController {
           selectedcompany: [],
           status: false)
       .obs;
+  final mapContoller = MapController().obs;
+  final mapKey = UniqueKey();
+  //MapData? mapData;
+  final mapData = MapData(center: LatLng(0, 0), zoom: 15.5).obs;
+  Future<Position> determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
 
-// bool _serviceEnabled;
-// PermissionStatus _permissionGranted;
-// LocationData _locationData;
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
+      return Future.error('Location services are disabled.');
+    }
 
-// _serviceEnabled = await location.serviceEnabled();
-// if (!_serviceEnabled) {
-//   _serviceEnabled = await location.requestService();
-//   if (!_serviceEnabled) {
-//     return;
-//   }
-// }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied, next time you could try
+        // requesting permissions again (this is also where
+        // Android's shouldShowRequestPermissionRationale
+        // returned true. According to Android guidelines
+        // your App should show an explanatory UI now.
+        return Future.error('Location permissions are denied');
+      }
+    }
 
-// _permissionGranted = await location.hasPermission();
-// if (_permissionGranted == PermissionStatus.denied) {
-//   _permissionGranted = await location.requestPermission();
-//   if (_permissionGranted != PermissionStatus.granted) {
-//     return;
-//   }
-// }
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
 
-// _locationData = await location.getLocation();
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+
+    return await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+  }
 
   void changeRemiderTime(int value) {
     reminderTime(value);
+  }
+
+  void listenPositionStream() {
+    mapData.value = MapData(
+      center: mapContoller.value.center,
+      zoom: mapContoller.value.zoom!,
+    );
+
+    // listen everytime the map data changes (move or zoom)
+    mapContoller.value.positionStream?.listen((data) async {
+      mapData.value = data;
+      await Future.delayed(Duration(milliseconds: 5000));
+      update();
+    });
   }
 
   @override
@@ -61,10 +119,17 @@ class TurnOffController extends GetxController {
   Future loadUserData() async {
     isloadingData(true);
     final response = await TurnOffConnect().getUserProfileData();
-    print("Is Loading Data: " + response.toString());
+    // print("Is Loading Data: " + response.toString());
     // print(UserProfile.fromJson(jsonDecode(response)));
     userData(UserProfile.fromJson(jsonDecode(response)));
     isloadingData(false);
+  }
+
+  Future getDeviceLocation() async {
+    // userPosition.value = await Geolocator.getCurrentPosition(
+    //     desiredAccuracy: LocationAccuracy.high);
+    userPosition.value = await determinePosition();
+    print(userPosition);
   }
 
   void upDateUserSetting() {
@@ -89,15 +154,11 @@ class TurnOffController extends GetxController {
     if (userData.value.notetype.contains("sms")) isReciveMesseage(true);
   }
 
-  addNewLoaction() async {
-    LocationData _locationData = await userCurrentLocation.value.getLocation();
-    print(_locationData);
+  getNeshani() async {
     Response locationName = await TurnOffConnect().getLocationNameData(
-        _locationData.latitude.toString(), _locationData.longitude.toString());
-    print(locationName.body);
-    NeshanModel neshani = NeshanModel.fromJson(jsonDecode(locationName.body));
-    return Get.defaultDialog(
-        title: 'اضافه کردن آدرس جدید', content: Text(locationName.toString()));
+        mapData.value.center.latitudeStr, mapData.value.center.longitudeStr);
+    // print(locationName.body);
+    neshani.value = NeshanModel.fromJson(locationName.body);
   }
 
   informationDialog() => Get.defaultDialog(
