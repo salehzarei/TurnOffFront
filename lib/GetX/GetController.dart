@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
@@ -15,6 +16,8 @@ class TurnOffController extends GetxController {
   final isReciveNotification = true.obs;
   final reminderTime = 15.obs;
   final isloadingData = true.obs;
+  final isGPSEnable = true.obs;
+  final isGPSDenied = false.obs;
   final neshani = NeshanModel(
           status: "",
           neighbourhood: "",
@@ -22,7 +25,11 @@ class TurnOffController extends GetxController {
           state: "",
           city: "",
           inOddEvenZone: false,
-          addresses: [],
+          addresses: [
+            Address(
+                components: [Component(name: "name", type: "type")],
+                formatted: "")
+          ],
           routeName: "",
           routeType: "",
           place: "",
@@ -51,49 +58,51 @@ class TurnOffController extends GetxController {
       .obs;
   final mapContoller = MapController().obs;
   final mapKey = UniqueKey();
-  //MapData? mapData;
+
   final mapData = MapData(center: LatLng(0, 0), zoom: 15.5).obs;
+
   Future<Position> determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
 
-    // Test if location services are enabled.
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      // Location services are not enabled don't continue
-      // accessing the position and request users of the
-      // App to enable the location services.
+      isGPSEnable(false);
       return Future.error('Location services are disabled.');
-    }
+    } else
+      isGPSEnable(true);
 
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        // Permissions are denied, next time you could try
-        // requesting permissions again (this is also where
-        // Android's shouldShowRequestPermissionRationale
-        // returned true. According to Android guidelines
-        // your App should show an explanatory UI now.
+        isGPSDenied(true);
         return Future.error('Location permissions are denied');
-      }
+      } else
+        isGPSDenied(false);
     }
 
     if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately.
       return Future.error(
           'Location permissions are permanently denied, we cannot request permissions.');
     }
-
-    // When we reach here, permissions are granted and we can
-    // continue accessing the position of the device.
-
-    return await Geolocator.getCurrentPosition(
+    userPosition.value = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
+    return userPosition.value;
   }
 
-  void changeRemiderTime(int value) {
-    reminderTime(value);
+// دریافت نقطه به آدرس از نشان
+  Future getNeshani(LatLng latlng) async {
+    Response locationName = await TurnOffConnect()
+        .getLocationNameData(latlng.latitudeStr, latlng.longitudeStr);
+    print(locationName.body);
+    neshani.value = NeshanModel.fromJson(locationName.body);
+  }
+
+// به روز رسانی موقعیت نقشه
+  Future updateNeshani(newData) async {
+    mapData.value = new MapData(zoom: 17, center: newData);
+    await getNeshani(mapData.value.center);
   }
 
   void listenPositionStream() {
@@ -103,9 +112,8 @@ class TurnOffController extends GetxController {
     );
 
     // listen everytime the map data changes (move or zoom)
-    mapContoller.value.positionStream?.listen((data) async {
+    mapContoller.value.positionStream?.listen((data) {
       mapData.value = data;
-      await Future.delayed(Duration(milliseconds: 5000));
       update();
     });
   }
@@ -125,11 +133,8 @@ class TurnOffController extends GetxController {
     isloadingData(false);
   }
 
-  Future getDeviceLocation() async {
-    // userPosition.value = await Geolocator.getCurrentPosition(
-    //     desiredAccuracy: LocationAccuracy.high);
-    userPosition.value = await determinePosition();
-    print(userPosition);
+  void changeRemiderTime(int value) {
+    reminderTime(value);
   }
 
   void upDateUserSetting() {
@@ -152,13 +157,6 @@ class TurnOffController extends GetxController {
     if (userData.value.notetype.contains("notification"))
       isReciveNotification(true);
     if (userData.value.notetype.contains("sms")) isReciveMesseage(true);
-  }
-
-  getNeshani() async {
-    Response locationName = await TurnOffConnect().getLocationNameData(
-        mapData.value.center.latitudeStr, mapData.value.center.longitudeStr);
-    // print(locationName.body);
-    neshani.value = NeshanModel.fromJson(locationName.body);
   }
 
   informationDialog() => Get.defaultDialog(

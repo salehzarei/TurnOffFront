@@ -9,20 +9,6 @@ class TurnOffMap extends StatelessWidget {
     final x = Get.put(TurnOffController());
     return GetX<TurnOffController>(
         builder: (_) => Scaffold(
-              floatingActionButton: SizedBox(
-                height: 100,
-                width: 100,
-                child: FloatingActionButton(
-                    child: Text(
-                      'بررسی\nآدرس',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 22,
-                          height: 1.25),
-                    ),
-                    onPressed: () => x.getNeshani()),
-              ),
               body: Stack(
                 fit: StackFit.expand,
                 children: [
@@ -34,7 +20,7 @@ class TurnOffMap extends StatelessWidget {
                       x.userPosition.value.longitude
                     ],
                     zoom: 17,
-                    showLocator: true,
+                    // showLocator: true,
                     showCenterMarker: true,
                     locator: Locator(
                       alignment: Alignment.bottomLeft,
@@ -48,10 +34,12 @@ class TurnOffMap extends StatelessWidget {
                     ),
                     onReady: () {
                       x.listenPositionStream();
-                      x.getNeshani();
                     },
+                    onTap: (latlog) => x.updateNeshani(latlog),
+
+                    disableRotation: true,
                   ),
-                  if (x.mapData.value != null)
+                  if (x.neshani.value != null)
                     Align(
                       alignment: Alignment.topCenter,
                       child: Container(
@@ -60,6 +48,7 @@ class TurnOffMap extends StatelessWidget {
                         child: Material(
                           elevation: 6,
                           child: Container(
+                            height: 80,
                             decoration: BoxDecoration(
                                 color: Colors.white.withOpacity(0.5),
                                 borderRadius: BorderRadius.circular(15)),
@@ -78,12 +67,14 @@ class TurnOffMap extends StatelessWidget {
                       ),
                     ),
                   Align(
-                    alignment: Alignment.bottomCenter,
+                    alignment: Alignment.bottomRight,
                     child: Container(
                         margin: EdgeInsets.only(bottom: 40, right: 40),
                         color: Colors.transparent,
                         child: RaisedButton(
                           color: Colors.greenAccent.shade400,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
                           onPressed: () => Get.back(),
                           child: Text(
                             "تایید و ثبت آدرس",

@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:turnoff/GetX/GetController.dart';
 import 'package:turnoff/widget/AddressCard.dart';
+import 'package:universe/universe.dart';
 
 import 'widget/Map.dart';
 
@@ -74,12 +75,52 @@ class SettingPage extends StatelessWidget {
                       Visibility(
                           visible: x.userData.value.addresses.length < 4,
                           child: TextButton(
-                              onPressed: () {
-                                x.getDeviceLocation().whenComplete(
-                                      () => Get.to(TurnOffMap()),
-                                    );
+                              onPressed: () async {
+                                x.determinePosition();
+                                await Future.delayed(
+                                    Duration(milliseconds: 300));
+                                if (x.isGPSEnable.value &&
+                                    !x.isGPSDenied.value) {
+                                  x.userPosition.value.latitude != 0.0
+                                      ? await x.getNeshani(LatLng(
+                                          x.userPosition.value.latitude,
+                                          x.userPosition.value.longitude))
+                                      : Future.error(
+                                          'خطا در دریافت نشانی از سرور نشان');
+                                  Get.defaultDialog(
+                                      title: 'آدرس کنونی موقعیت شما',
+                                      content: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8.0),
+                                        child: Text(
+                                            '${x.neshani.value.state},${x.neshani.value.city}\n${x.neshani.value.addresses[0].formatted}',
+                                            textAlign: TextAlign.center,
+                                            textDirection: TextDirection.rtl),
+                                      ),
+                                      confirm: TextButton(
+                                          onPressed: () => Get.to(TurnOffMap()),
+                                          child: Text('انتخاب از روی نقشه')),
+                                      cancel: TextButton(
+                                          onPressed: () => Get.back(),
+                                          child: Text('تایید میکنم')));
+                                } else
+                                  Get.defaultDialog(
+                                      title: '!مشکل ریزی پیش آمده',
+                                      titleStyle: TextStyle(color: Colors.red),
+                                      content: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10),
+                                        child: Text(
+                                          "دسترسی به موقعیت یاب گوشی شما فعال نیست یا به این برنامه مجوز استفاده ندادید، برای ثبت آدرس نیاز به فعال سازی آن دارید",
+                                          textAlign: TextAlign.justify,
+                                          textDirection: TextDirection.rtl,
+                                        ),
+                                      ),
+                                      cancel: TextButton(
+                                          onPressed: () => Get.back(),
+                                          child: Text('بستن')));
                               },
-                              child: Text("اضافه کردن آدرس جدید"))),
+                              child: Text(" + اضافه کردن آدرس جدید"))),
                       Expanded(
                           flex: 3,
                           child: Container(

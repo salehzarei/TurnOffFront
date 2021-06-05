@@ -41,10 +41,12 @@ class NeshanModel {
         state: json["state"] == null ? "" : json["state"],
         city: json["city"] == null ? "" : json["city"],
         inOddEvenZone:
-            json["in_odd_even_zone"] == null ? "" : json["in_odd_even_zone"],
+            json["in_odd_even_zone"] == null ? true : json["in_odd_even_zone"],
         addresses: List<Address>.from(
             json["addresses"].map((x) => Address.fromJson(x))),
-        // addresses: json["addresses"] == null ? null : List<Address>.from(json["addresses"].map((x) => Address.fromJson(x))),
+        // addresses: json["addresses"] ??
+        //     List<Address>.from(
+        //         json["addresses"].map((x) => Address.fromJson(x))),
         routeName: json["route_name"] == null ? "" : json["route_name"],
         routeType: json["route_type"] == null ? "" : json["route_type"],
         place: json["place"] == null ? "" : json["place"],

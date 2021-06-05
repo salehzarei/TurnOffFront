@@ -4,7 +4,7 @@ import 'package:marquee/marquee.dart';
 import 'package:turnoff/Model/UserProfileModel.dart';
 
 class AddressCard extends StatelessWidget {
-  final Address userAddress;
+  final UserAddress userAddress;
 
   const AddressCard({required this.userAddress});
   @override
@@ -32,15 +32,15 @@ class AddressCard extends StatelessWidget {
               width: Get.width,
               height: 20,
               child: Marquee(
-                text: '${userAddress.province}، ${userAddress.city}، ${userAddress.local} ، ${userAddress.street}',
+                text:
+                    '${userAddress.province}، ${userAddress.city}، ${userAddress.local} ، ${userAddress.street}',
                 style: Get.textTheme.headline6,
                 crossAxisAlignment: CrossAxisAlignment.start,
-               // blankSpace: 5.0,
-               // pauseAfterRound: Duration(seconds: 1),
-               // startPadding: 10.0,
+                // blankSpace: 5.0,
+                // pauseAfterRound: Duration(seconds: 1),
+                // startPadding: 10.0,
                 blankSpace: Get.width * 0.20,
                 velocity: -15,
-                
               ),
             ),
           ),
