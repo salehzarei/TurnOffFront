@@ -11,6 +11,9 @@ class SettingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final TurnOffController c = Get.put(TurnOffController());
     return GetX<TurnOffController>(
+        initState: (_) {
+          c.determinePosition();
+        },
         builder: (x) => Scaffold(
               appBar: AppBar(
                   backgroundColor: Colors.transparent,
@@ -76,9 +79,9 @@ class SettingPage extends StatelessWidget {
                           visible: x.userData.value.addresses.length < 4,
                           child: TextButton(
                               onPressed: () async {
-                                x.determinePosition();
-                                await Future.delayed(
-                                    Duration(milliseconds: 300));
+                                //x.determinePosition();
+                                // await Future.delayed(
+                                //     Duration(milliseconds: 300));
                                 if (x.isGPSEnable.value &&
                                     !x.isGPSDenied.value) {
                                   x.userPosition.value.latitude != 0.0

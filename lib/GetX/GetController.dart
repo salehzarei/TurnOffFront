@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
@@ -61,17 +60,16 @@ class TurnOffController extends GetxController {
 
   final mapData = MapData(center: LatLng(0, 0), zoom: 15.5).obs;
 
+//دسترسی به جی پی اس و گرفتن موقعیت کنونی گوشی
   Future<Position> determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
-
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       isGPSEnable(false);
       return Future.error('Location services are disabled.');
     } else
       isGPSEnable(true);
-
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
@@ -81,7 +79,6 @@ class TurnOffController extends GetxController {
       } else
         isGPSDenied(false);
     }
-
     if (permission == LocationPermission.deniedForever) {
       return Future.error(
           'Location permissions are permanently denied, we cannot request permissions.');
