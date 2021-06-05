@@ -101,7 +101,10 @@ class SettingPage extends StatelessWidget {
                                             textDirection: TextDirection.rtl),
                                       ),
                                       confirm: TextButton(
-                                          onPressed: () => Get.to(TurnOffMap()),
+                                          onPressed: () {
+                                            Get.back();
+                                            Get.to(TurnOffMap());
+                                          },
                                           child: Text('انتخاب از روی نقشه')),
                                       cancel: TextButton(
                                           onPressed: () => Get.back(),

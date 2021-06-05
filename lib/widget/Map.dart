@@ -48,7 +48,8 @@ class TurnOffMap extends StatelessWidget {
                         child: Material(
                           elevation: 6,
                           child: Container(
-                            height: 80,
+                            height: 95,
+                            alignment: Alignment.center,
                             decoration: BoxDecoration(
                                 color: Colors.white.withOpacity(0.5),
                                 borderRadius: BorderRadius.circular(15)),
@@ -91,7 +92,7 @@ class TurnOffMap extends StatelessWidget {
                       child: Material(
                         elevation: 6,
                         child: Container(
-                          color: Colors.blue,
+                          color: Colors.white,
                           alignment: Alignment.center,
                           padding:
                               EdgeInsets.symmetric(vertical: 7, horizontal: 10),
