@@ -33,6 +33,7 @@ dependencies:
   marquee: ^2.1.0
   geolocator: ^7.0.3
   universe: ^0.0.7-nullsafety
+  shared_preferences: ^2.0.6
  
 
 dev_dependencies:
