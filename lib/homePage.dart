@@ -6,6 +6,7 @@ import 'settingPage.dart';
 import 'widget/LocationCards.dart';
 
 class HomePage extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     final TurnOffController c = Get.put(TurnOffController());
