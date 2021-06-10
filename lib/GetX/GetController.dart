@@ -2,24 +2,35 @@ import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_carousel_slider/carousel_slider.dart';
 import 'package:get/get.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:turnoff/Model/NeshanModel.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:turnoff/Model/UserProfileModel.dart';
 import 'package:universe/universe.dart';
-import '../main.dart';
+// import '../main.dart';
 import 'ServerHandler.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+//import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class TurnOffController extends GetxController {
   final todayindex = DateTime.now().weekday;
   final isReciveMesseage = false.obs;
   final isReciveNotification = true.obs;
+  final isSystemActive = true.obs;
   final reminderTime = 15.obs;
   final isloadingData = true.obs;
   final isGPSEnable = true.obs;
   final isGPSDenied = false.obs;
+  final userToken = ''.obs;
+  final phoneRegContoller = TextEditingController().obs;
+  final sliderController = CarouselSliderController().obs;
+  final sliderURls = [
+    'https://img9.irna.ir/d/r2/2020/11/01/4/157696706.jpg',
+    'https://nirogahian.ir/wp-content/uploads/2020/05/230..jpg',
+    'https://mardommashad.ir/wp-content/uploads/2019/06/745292.jpg'
+  ].obs;
   final neshani = NeshanModel(
           status: "",
           neighbourhood: "",
@@ -62,6 +73,19 @@ class TurnOffController extends GetxController {
   final mapKey = UniqueKey();
 
   final mapData = MapData(center: LatLng(0, 0), zoom: 15.5).obs;
+
+// تنظیمات خواندن توکن ازگوشی
+  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+// نوشتن توکن در گوشی
+  Future<void> getTokenFromPhone() async {
+    final SharedPreferences prefs = await _prefs;
+    userToken.value = (prefs.getString('token') ?? '');
+  }
+
+  setTokeninPhone() async {
+    final SharedPreferences prefs = await _prefs;
+    prefs.setString('token', '09154127181');
+  }
 
 //دسترسی به جی پی اس و گرفتن موقعیت کنونی گوشی
   Future<Position> determinePosition() async {
@@ -121,26 +145,37 @@ class TurnOffController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    //چک کردن توکن کاربر
+    getTokenFromPhone();
     loadUserData().whenComplete(() => upDateUserSetting());
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
       if (notification != null && android != null) {
-        flutterLocalNotificationsPlugin.show(
-            notification.hashCode,
-            notification.title,
-            notification.body,
-            NotificationDetails(
-              android: AndroidNotificationDetails(
-                channel.id,
-                channel.name,
-                channel.description,
-                color: Colors.blue,
-                playSound: true,
-                icon: '@mipmap/ic_launcher',
-              ),
-            ));
+        Get.dialog(AlertDialog(
+          title: Text(notification.title ?? ""),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [Text(notification.body ?? "")],
+            ),
+          ),
+        ));
+        // flutterLocalNotificationsPlugin.show(
+        //     notification.hashCode,
+        //     notification.title,
+        //     notification.body,
+        //     NotificationDetails(
+        //       android: AndroidNotificationDetails(
+        //         channel.id,
+        //         channel.name,
+        //         channel.description,
+        //         color: Colors.blue,
+        //         playSound: true,
+        //         icon: '@mipmap/ic_launcher',
+        //       ),
+        //     ));
       }
     });
 
@@ -162,19 +197,19 @@ class TurnOffController extends GetxController {
     });
   }
 
-  void showNotification() {
-    flutterLocalNotificationsPlugin.show(
-        0,
-        "Testing ",
-        "How you doin ?",
-        NotificationDetails(
-            android: AndroidNotificationDetails(
-                channel.id, channel.name, channel.description,
-                importance: Importance.high,
-                color: Colors.blue,
-                playSound: true,
-                icon: '@mipmap/ic_launcher')));
-  }
+  // void showNotification() {
+  //   flutterLocalNotificationsPlugin.show(
+  //       0,
+  //       "Testing ",
+  //       "How you doin ?",
+  //       NotificationDetails(
+  //           android: AndroidNotificationDetails(
+  //               channel.id, channel.name, channel.description,
+  //               importance: Importance.high,
+  //               color: Colors.blue,
+  //               playSound: true,
+  //               icon: '@mipmap/ic_launcher')));
+  // }
 
   Future loadUserData() async {
     isloadingData(true);

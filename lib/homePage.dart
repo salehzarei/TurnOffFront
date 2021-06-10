@@ -1,4 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_carousel_slider/carousel_slider.dart';
+import 'package:flutter_carousel_slider/carousel_slider_indicators.dart';
 import 'package:get/get.dart';
 
 import 'GetX/GetController.dart';
@@ -6,7 +9,6 @@ import 'settingPage.dart';
 import 'widget/LocationCards.dart';
 
 class HomePage extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     final TurnOffController c = Get.put(TurnOffController());
@@ -23,85 +25,121 @@ class HomePage extends StatelessWidget {
                       color: Get.theme.iconTheme.color,
                     )),
                 actions: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: Row(
-                      children: [
-                        Text(
-                          'اطلاع رسانی فعال',
-                          style: TextStyle(color: Colors.green, fontSize: 16),
-                        ),
-                        Icon(
-                          Icons.power_settings_new_outlined,
-                          color: Colors.green,
-                        ),
-                      ],
+                  GestureDetector(
+                    onTap: () => c.isSystemActive.toggle(),
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 10.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            c.isSystemActive.value
+                                ? 'اطلاع رسانی غیرفعال'
+                                : 'اطلاع رسانی فعال',
+                                textAlign: TextAlign.right,
+                            style: TextStyle(
+                                color: c.isSystemActive.value
+                                    ? Colors.green
+                                    : Colors.red,
+                                fontSize: 16),
+                          ),
+                          SizedBox(width: 3,),
+                          Icon(
+                            Icons.power_settings_new_outlined,
+                            color: c.isSystemActive.value ? Colors.green : Colors.red,
+                          ),
+                        ],
+                      ),
                     ),
                   )
                 ],
               ),
-              body: c.isloadingData.value ? Center(
-                child: CircularProgressIndicator(),
-              ) : Directionality(
-                textDirection: TextDirection.rtl,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(right: 5, left: 5),
-                            child: Text(
-                              'شماره موبایل شما',
-                              style: Get.textTheme.headline5,
+              body: c.isloadingData.value
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : Directionality(
+                      textDirection: TextDirection.rtl,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: Column(
+                          children: [
+                            Container(
+                              height: Get.height * 0.25,
+                              margin: EdgeInsets.only(bottom: 15),
+                              child: CarouselSlider.builder(
+                                  controller: c.sliderController.value,
+                                  slideIndicator: CircularSlideIndicator(
+                                      padding: EdgeInsets.only(bottom: 15)),
+                                  initialPage: 0,
+                                  enableAutoSlider: true,
+                                  unlimitedMode: true,
+                                  slideBuilder: (index) {
+                                    return CachedNetworkImage(
+                                      imageUrl: c.sliderURls[index],
+                                      fit: BoxFit.cover,
+                                      placeholder: (context, url) =>
+                                          CircularProgressIndicator(),
+                                    );
+                                  },
+                                  itemCount: 3),
                             ),
-                          ),
-                          Expanded(
-                              child: Container(
-                            color: Colors.blueGrey,
-                            height: 0.5,
-                          ))
-                        ],
-                      ),
-                      Text(
-                        c.userData.value.userphone,
-                        style: Get.textTheme.headline1,
-                      ),
-                      Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(right: 5, left: 5),
-                            child: Text(
-                              'تنظیمات شما',
-                              style: Get.textTheme.headline5,
+                            Row(
+                              children: [
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.only(right: 5, left: 5),
+                                  child: Text(
+                                    'شماره موبایل شما',
+                                    style: Get.textTheme.headline5,
+                                  ),
+                                ),
+                                Expanded(
+                                    child: Container(
+                                  color: Colors.blueGrey,
+                                  height: 0.5,
+                                ))
+                              ],
                             ),
-                          ),
-                          Expanded(
+                            Text(
+                              c.userData.value.userphone,
+                              style: Get.textTheme.headline1,
+                            ),
+                            Row(
+                              children: [
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.only(right: 5, left: 5),
+                                  child: Text(
+                                    'تنظیمات شما',
+                                    style: Get.textTheme.headline5,
+                                  ),
+                                ),
+                                Expanded(
+                                    child: Container(
+                                  color: Colors.blueGrey,
+                                  height: 0.5,
+                                ))
+                              ],
+                            ),
+                            Expanded(
                               child: Container(
-                            color: Colors.blueGrey,
-                            height: 0.5,
-                          ))
-                        ],
-                      ),
-                      Expanded(
-                        child: Container(
-                          child: ListView(
-                            children: [
-                              GestureDetector(
-                                  onTap: () => c.informationDialog(),
-                                  child: LocationCards()),
-                              LocationCards(),
-                              LocationCards(),
-                              LocationCards()
-                            ],
-                          ),
+                                child: ListView(
+                                  children: [
+                                    GestureDetector(
+                                        onTap: () => c.informationDialog(),
+                                        child: LocationCards()),
+                                    LocationCards(),
+                                    LocationCards(),
+                                    LocationCards()
+                                  ],
+                                ),
+                              ),
+                            )
+                          ],
                         ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
+                      ),
+                    ),
             ));
   }
 }
