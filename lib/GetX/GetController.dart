@@ -24,6 +24,7 @@ class TurnOffController extends GetxController {
   final isGPSEnable = true.obs;
   final isGPSDenied = false.obs;
   final userToken = ''.obs;
+  final userVerificationCode = ''.obs;
   final phoneRegContoller = TextEditingController().obs;
   final sliderController = CarouselSliderController().obs;
   final sliderURls = [
@@ -140,6 +141,12 @@ class TurnOffController extends GetxController {
       mapData.value = data;
       update();
     });
+  }
+
+  @override
+  void dispose() {
+    mapContoller.value.dispose();
+    super.dispose();
   }
 
   @override

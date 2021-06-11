@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:turnoff/GetX/GetController.dart';
 import 'package:turnoff/VerificationCodePage.dart';
-import 'package:turnoff/homePage.dart';
 
 class RegisterPage extends StatelessWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -29,6 +28,7 @@ class RegisterPage extends StatelessWidget {
                       child: TextField(
                         controller: x.phoneRegContoller(),
                         maxLength: 11,
+                        onChanged: (v) => x.phoneRegContoller.update((val) {}),
                         keyboardType: TextInputType.phone,
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 30),
@@ -62,7 +62,7 @@ class RegisterPage extends StatelessWidget {
                                       side: BorderSide(color: Colors.yellow)))),
                       onPressed: () =>
                           x.phoneRegContoller.value.text.length == 11
-                              ? Get.to(HomePage())
+                              ? Get.to(VerificationCodePage())
                               : null,
                       child: Text(
                         "ثبت شماره تلفن",
@@ -70,7 +70,6 @@ class RegisterPage extends StatelessWidget {
                         style: TextStyle(color: Colors.black, fontSize: 20),
                       ),
                     ),
-                    Text(x.phoneRegContoller.value.text.toString())
                   ],
                 ),
               ),
