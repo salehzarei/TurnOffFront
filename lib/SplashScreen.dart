@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:turnoff/GetX/GetController.dart';
-import 'package:turnoff/homePage.dart';
+import 'package:turnoff/HomePage.dart';
 
 import 'RegisterPage.dart';
 

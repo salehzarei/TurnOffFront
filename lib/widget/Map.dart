@@ -8,6 +8,8 @@ class TurnOffMap extends StatelessWidget {
   Widget build(BuildContext context) {
     final x = Get.put(TurnOffController());
     return GetX<TurnOffController>(
+        // didChangeDependencies: (state) => x.mapContoller().dispose(),
+        dispose: (s) => x.mapContoller().dispose(),
         builder: (_) => Scaffold(
               body: Stack(
                 fit: StackFit.expand,
@@ -76,7 +78,10 @@ class TurnOffMap extends StatelessWidget {
                           color: Colors.greenAccent.shade400,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)),
-                          onPressed: () => Get.back(),
+                          onPressed: () {
+                            x.mapContoller.value.dispose();
+                            Get.back();
+                          },
                           child: Text(
                             "تایید و ثبت آدرس",
                             style: TextStyle(fontSize: 25, color: Colors.white),

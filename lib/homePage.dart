@@ -5,7 +5,7 @@ import 'package:flutter_carousel_slider/carousel_slider_indicators.dart';
 import 'package:get/get.dart';
 
 import 'GetX/GetController.dart';
-import 'settingPage.dart';
+import 'SettingPage.dart';
 import 'widget/LocationCards.dart';
 
 class HomePage extends StatelessWidget {
@@ -34,19 +34,23 @@ class HomePage extends StatelessWidget {
                         children: [
                           Text(
                             c.isSystemActive.value
-                                ? 'اطلاع رسانی غیرفعال'
-                                : 'اطلاع رسانی فعال',
-                                textAlign: TextAlign.right,
+                                ? 'اطلاع رسانی فعال'
+                                : 'اطلاع رسانی غیرفعال',
+                            textAlign: TextAlign.right,
                             style: TextStyle(
                                 color: c.isSystemActive.value
                                     ? Colors.green
                                     : Colors.red,
                                 fontSize: 16),
                           ),
-                          SizedBox(width: 3,),
+                          SizedBox(
+                            width: 3,
+                          ),
                           Icon(
                             Icons.power_settings_new_outlined,
-                            color: c.isSystemActive.value ? Colors.green : Colors.red,
+                            color: c.isSystemActive.value
+                                ? Colors.green
+                                : Colors.red,
                           ),
                         ],
                       ),
@@ -77,9 +81,11 @@ class HomePage extends StatelessWidget {
                                   slideBuilder: (index) {
                                     return CachedNetworkImage(
                                       imageUrl: c.sliderURls[index],
+
                                       fit: BoxFit.cover,
-                                      placeholder: (context, url) =>
-                                          CircularProgressIndicator(),
+
+                                      // placeholder: (context, url) =>
+                                      //     CircularProgressIndicator(),
                                     );
                                   },
                                   itemCount: 3),
@@ -111,7 +117,7 @@ class HomePage extends StatelessWidget {
                                   padding:
                                       const EdgeInsets.only(right: 5, left: 5),
                                   child: Text(
-                                    'تنظیمات شما',
+                                    'محل های شما',
                                     style: Get.textTheme.headline5,
                                   ),
                                 ),
