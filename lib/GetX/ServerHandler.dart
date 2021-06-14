@@ -18,4 +18,9 @@ class TurnOffConnect extends GetConnect {
         });
     return response;
   }
+
+  Future checkUserNumber(String phone) async {
+    final response = await get('http://localhost:3000/users/$phone');
+    return response;
+  }
 }

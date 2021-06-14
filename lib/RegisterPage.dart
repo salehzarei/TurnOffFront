@@ -62,7 +62,7 @@ class RegisterPage extends StatelessWidget {
                                       side: BorderSide(color: Colors.yellow)))),
                       onPressed: () =>
                           x.phoneRegContoller.value.text.length == 11
-                              ? Get.to(HomePage())
+                              ? x.checkMobile()
                               : null,
                       child: Text(
                         "ثبت شماره تلفن",

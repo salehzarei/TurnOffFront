@@ -82,6 +82,13 @@ class TurnOffController extends GetxController {
     userToken.value = (prefs.getString('token') ?? '');
   }
 
+// بررسی شماره موبایل در سرور 
+Future checkMobile() async {
+  Response mobileStatus = await TurnOffConnect().checkUserNumber(phoneRegContoller.value.text);
+  print(mobileStatus.body);
+}
+
+
   setTokeninPhone() async {
     final SharedPreferences prefs = await _prefs;
     prefs.setString('token', '09154127181');
