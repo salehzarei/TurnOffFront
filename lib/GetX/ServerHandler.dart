@@ -20,7 +20,7 @@ class TurnOffConnect extends GetConnect {
   }
 
   Future checkUserNumber(String phone) async {
-    final response = await get('http://10.0.2.2:3000/users/$phone');
+    final response = await get('https://shifon.ir/users/$phone');
     return response;
   }
 }
