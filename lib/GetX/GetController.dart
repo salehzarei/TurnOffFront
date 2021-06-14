@@ -9,6 +9,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:turnoff/Model/NeshanModel.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:turnoff/Model/UserProfileModel.dart';
+import 'package:turnoff/VerificationCodePage.dart';
+import 'package:turnoff/homePage.dart';
 import 'package:universe/universe.dart';
 // import '../main.dart';
 import 'ServerHandler.dart';
@@ -83,12 +85,20 @@ class TurnOffController extends GetxController {
     userToken.value = (prefs.getString('token') ?? '');
   }
 
-// بررسی شماره موبایل در سرور 
-Future checkMobile() async {
-  Response mobileStatus = await TurnOffConnect().checkUserNumber(phoneRegContoller.value.text);
-  print(mobileStatus.body);
-}
-
+// بررسی شماره موبایل در سرور
+  Future checkMobile() async {
+    Response mobileStatus =
+        await TurnOffConnect().checkUserNumber(phoneRegContoller.value.text);
+    print(mobileStatus.body);
+    Map<String, dynamic> result = mobileStatus.body;
+    if (result['success'] == -1) {
+      Get.off(VerificationCodePage());
+    }
+if (result['success'] == 1) {
+     Get.off(HomePage());
+    }
+    
+  }
 
   setTokeninPhone() async {
     final SharedPreferences prefs = await _prefs;
