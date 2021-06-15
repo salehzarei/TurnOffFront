@@ -70,7 +70,7 @@ class TurnOffController extends GetxController {
           notetype: [],
           remindtime: 15,
           selectedcompany: [],
-          status: false)
+          status: 1)
       .obs;
   final mapContoller = MapController().obs;
   final mapKey = UniqueKey();
@@ -79,10 +79,12 @@ class TurnOffController extends GetxController {
 
 // تنظیمات خواندن توکن ازگوشی
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-// نوشتن توکن در گوشی
-  Future<void> getTokenFromPhone() async {
+// خواندن توکن از گوشی
+  Future getTokenFromPhone() async {
     final SharedPreferences prefs = await _prefs;
-    userToken.value = (prefs.getString('token') ?? '');
+    final String token = (prefs.getString('token') ?? '');
+    userToken(token);
+    await loadUserData(token: token);
   }
 
 // بررسی شماره موبایل در سرور
@@ -94,15 +96,16 @@ class TurnOffController extends GetxController {
     if (result['success'] == -1) {
       Get.off(VerificationCodePage());
     }
-if (result['success'] == 1) {
-     Get.off(HomePage());
+    if (result['success'] == 1) {
+      print("Token Set in Phone : ${result['data']['userToken']}");
+      setTokeninPhone(result['data']['userToken'])
+          .whenComplete(() => Get.off(HomePage()));
     }
-    
   }
 
-  setTokeninPhone() async {
+  Future setTokeninPhone(String token) async {
     final SharedPreferences prefs = await _prefs;
-    prefs.setString('token', '09154127181');
+    prefs.setString('token', token);
   }
 
 //دسترسی به جی پی اس و گرفتن موقعیت کنونی گوشی
@@ -171,7 +174,8 @@ if (result['success'] == 1) {
     super.onInit();
     //چک کردن توکن کاربر
     getTokenFromPhone();
-    loadUserData().whenComplete(() => upDateUserSetting());
+
+    // loadUserData().whenComplete(() => upDateUserSetting());
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
@@ -235,12 +239,16 @@ if (result['success'] == 1) {
   //               icon: '@mipmap/ic_launcher')));
   // }
 
-  Future loadUserData() async {
+  Future loadUserData({required String token}) async {
     isloadingData(true);
-    final response = await TurnOffConnect().getUserProfileData();
-    // print("Is Loading Data: " + response.toString());
+    print(userToken.value);
+    final Response response = await TurnOffConnect().getUserProfileData(token);
+    print("Is Loading Data: " + response.body.toString());
     // print(UserProfile.fromJson(jsonDecode(response)));
-    userData(UserProfile.fromJson(jsonDecode(response)));
+    if (response.body['success'] == 1)
+      userData(UserProfile.fromJson(response.body['data']));
+      print(userData.value.selectedcompany);
+
     isloadingData(false);
   }
 

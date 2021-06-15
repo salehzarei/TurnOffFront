@@ -15,7 +15,7 @@ class SplashScreen extends StatelessWidget {
         init: TurnOffController(),
         initState: (_) {
           Future.delayed(Duration(seconds: 3), () {
-            print("بررسی اینکه توکن هست یا نیست بالاخره");
+           // بررسی اینکه توکن هست یا نیست بالاخره");
             if (x.userToken.value == "")
               Get.off(RegisterPage());
             else

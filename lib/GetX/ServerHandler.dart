@@ -2,11 +2,17 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class TurnOffConnect extends GetConnect {
-  Future getUserProfileData() async {
+//final String serverURL = 'https://shifon.ir/';
+  final String serverURL = 'http://10.0.2.2:3000';
+
+  Future getUserProfileData(String token) async {
     final response =
-        await rootBundle.loadString('assets/json/userprofilesample.json');
-    //delay for test
-    await Future.delayed(Duration(milliseconds: 5000));
+        //   await rootBundle.loadString('assets/json/userprofilesample.json');
+        //delay for test
+        // await Future.delayed(Duration(milliseconds: 5000));
+
+        await post('$serverURL/users/getdata', {"turnofftoken": token});
+
     return response;
   }
 
@@ -20,7 +26,18 @@ class TurnOffConnect extends GetConnect {
   }
 
   Future checkUserNumber(String phone) async {
-    final response = await get('https://shifon.ir/users/$phone');
+    final response = await get('$serverURL/users/$phone');
+    return response;
+  }
+
+  Future checkOTP(String mobile, String verificationCode) async {
+    final response = await post('$serverURL/users/checkotp',
+        {"phone": mobile, "otp": verificationCode});
+    return response;
+  }
+
+  Future updateUserData(userData) async {
+    final response = await post('$serverURL/users/update', userData);
     return response;
   }
 }
