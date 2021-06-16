@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:turnoff/Model/UserProfileModel.dart';
 
 class LocationCards extends StatelessWidget {
+  final UserAddress address;
+
+  const LocationCards({Key? key, required this.address}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -11,6 +15,7 @@ class LocationCards extends StatelessWidget {
             //  height: 208,
             margin: EdgeInsets.all(10),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
@@ -20,7 +25,7 @@ class LocationCards extends StatelessWidget {
                       size: 15,
                     ),
                     Text(
-                      'محل سکونت خودم',
+                      address.title,
                       style: Get.textTheme.headline3,
                     ),
                     Spacer(),
@@ -38,7 +43,7 @@ class LocationCards extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 15),
                   child: Text(
-                    'خراسان رضوی، مشهد، ناحیه 12، رحمانیه 19، کوچه فرعی',
+                    address.city + '،' + address.local + '،' + address.street,
                     style: Get.textTheme.headline6,
                     overflow: TextOverflow.clip,
                     maxLines: 1,
@@ -80,14 +85,16 @@ class LocationCards extends StatelessWidget {
                         )
                       ],
                     ),
-                    SizedBox(width: 10,),
+                    SizedBox(
+                      width: 10,
+                    ),
                     Row(children: [
                       Text(' امروز شنبه 1400/3/10',
                           style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              )),
-                              Text(' از ساعت 15:30 الی 16:30',
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          )),
+                      Text(' از ساعت 15:30 الی 16:30',
                           style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
@@ -137,9 +144,12 @@ class LocationCards extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 15.0),
-                  child: Text(
-                    'مشاهده اعلان های هفته جاری',
-                    style: TextStyle(color: Colors.blueGrey),
+                  child: Center(
+                    child: Text(
+                      'مشاهده اعلان های هفته جاری',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.blueGrey),
+                    ),
                   ),
                 ),
               ],

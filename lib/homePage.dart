@@ -26,19 +26,29 @@ class HomePage extends StatelessWidget {
                     )),
                 actions: [
                   GestureDetector(
-                    onTap: () => c.isSystemActive.toggle(),
+                    onTap: () {
+                      if (c.userData.value.status == '1')
+                        c.userData.update((userData) {
+                          userData!.status = '0';
+                        });
+                      else
+                        c.userData.update((userData) {
+                          userData!.status = '1';
+                        });
+                    },
                     child: Padding(
                       padding: const EdgeInsets.only(right: 10.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(
-                            c.isSystemActive.value
+                            // c.isSystemActive.value
+                            c.userData.value.status == '1'
                                 ? 'اطلاع رسانی فعال'
                                 : 'اطلاع رسانی غیرفعال',
                             textAlign: TextAlign.right,
                             style: TextStyle(
-                                color: c.isSystemActive.value
+                                color: c.userData.value.status == '1'
                                     ? Colors.green
                                     : Colors.red,
                                 fontSize: 16),
@@ -48,7 +58,7 @@ class HomePage extends StatelessWidget {
                           ),
                           Icon(
                             Icons.power_settings_new_outlined,
-                            color: c.isSystemActive.value
+                            color: c.userData.value.status == '1'
                                 ? Colors.green
                                 : Colors.red,
                           ),
@@ -130,17 +140,25 @@ class HomePage extends StatelessWidget {
                             ),
                             Expanded(
                               child: Container(
-                                child: ListView(
-                                  children: [
-                                    GestureDetector(
-                                        onTap: () => c.informationDialog(),
-                                        child: LocationCards()),
-                                    LocationCards(),
-                                    LocationCards(),
-                                    LocationCards()
-                                  ],
-                                ),
-                              ),
+                                  child: c.userData.value.addresses.length < 1
+                                      ? Center(
+                                          child: Text(
+                                            "هنوز هیچ آدرسی ثبت نشده است \n جهت ثبت آدرس جدید به تنظیمات بروید",
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        )
+                                      : ListView.builder(
+                                          itemCount:
+                                              c.userData.value.addresses.length,
+                                          itemBuilder: (context, index) {
+                                            return GestureDetector(
+                                                onTap: () =>
+                                                    c.informationDialog(),
+                                                child: LocationCards(
+                                                  address: c.userData.value
+                                                      .addresses[index],
+                                                ));
+                                          })),
                             )
                           ],
                         ),

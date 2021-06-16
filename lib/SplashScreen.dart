@@ -12,15 +12,19 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final x = Get.put(TurnOffController());
     return GetBuilder<TurnOffController>(
-        init: TurnOffController(),
-        initState: (_) {
-          Future.delayed(Duration(seconds: 3), () {
-           // بررسی اینکه توکن هست یا نیست بالاخره");
-            if (x.userToken.value == "")
-              Get.off(RegisterPage());
-            else
+        // init: TurnOffController(),
+        initState: (_) async {
+          await x.getTokenFromPhone();
+          if (x.userToken.value == "")
+            Get.off(RegisterPage());
+          else
+            x.loadUserData(token: x.userToken.value).whenComplete(() {
+              x.loadUSerSetting();
               Get.off(HomePage());
-          });
+            });
+          //Future.delayed(Duration(seconds: 3), () {
+          // تاخیر برای عشق و حال
+          // });
         },
         builder: (_) => Material(
                 child: Center(

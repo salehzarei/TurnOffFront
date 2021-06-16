@@ -17,7 +17,7 @@ class UserProfile {
   });
 
   String userphone;
-  int status;
+  String status;
   List<String> notetype;
   List<String> selectedcompany;
   int charge;
@@ -27,10 +27,10 @@ class UserProfile {
   factory UserProfile.fromJson(Map<String, dynamic> json) => UserProfile(
         userphone: json["userphone"],
         status: json["status"],
-       // notetype: List<String>.from(json["notetype"].map((x) => x)),
-       notetype: List<String>.from(jsonDecode(json["selectedcompany"]).map((x) => x)),
-        selectedcompany:
-            List<String>.from(jsonDecode(json["selectedcompany"]).map((x) => x)),
+        // notetype: List<String>.from(json["notetype"].map((x) => x)),
+        notetype: List<String>.from(jsonDecode(json["notetype"]).map((x) => x)),
+        selectedcompany: List<String>.from(
+            jsonDecode(json["selectedcompany"]).map((x) => x)),
         charge: json["charge"],
         remindtime: json["remindtime"],
         addresses: List<UserAddress>.from(

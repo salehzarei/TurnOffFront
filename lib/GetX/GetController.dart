@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -70,7 +69,7 @@ class TurnOffController extends GetxController {
           notetype: [],
           remindtime: 15,
           selectedcompany: [],
-          status: 1)
+          status: "1")
       .obs;
   final mapContoller = MapController().obs;
   final mapKey = UniqueKey();
@@ -97,9 +96,38 @@ class TurnOffController extends GetxController {
       Get.off(VerificationCodePage());
     }
     if (result['success'] == 1) {
-      print("Token Set in Phone : ${result['data']['userToken']}");
+      // print("Token Set in Phone : ${result['data']['userToken']}");
+      userData(UserProfile.fromJson(mobileStatus.body['data']));
       setTokeninPhone(result['data']['userToken'])
           .whenComplete(() => Get.off(HomePage()));
+    }
+  }
+
+// خواندن اطلاعات از سرور بر اساس توکن
+  Future loadUserData({required String token}) async {
+    isloadingData(true);
+    print(userToken.value);
+    final Response response = await TurnOffConnect().getUserProfileData(token);
+    print("Is Loading Data: " + response.body.toString());
+    // print(UserProfile.fromJson(jsonDecode(response)));
+    if (response.body['success'] == 1)
+      userData(UserProfile.fromJson(response.body['data']));
+    print(userData.value.selectedcompany);
+
+    isloadingData(false);
+  }
+
+// به روزرسانی تنظیمات و اطلاعات کاربر در سرور
+  Future updateUserSetting() async {
+    isloadingData(true);
+    print(userData.value.notetype);
+    final Response response = await TurnOffConnect().updateUserData(userData);
+
+    print(response.body);
+
+    if (response.body['success'] == 1) {
+      print("موفقیت آمیز بود");
+      isloadingData(false);
     }
   }
 
@@ -175,8 +203,6 @@ class TurnOffController extends GetxController {
     //چک کردن توکن کاربر
     getTokenFromPhone();
 
-    // loadUserData().whenComplete(() => upDateUserSetting());
-
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
@@ -239,24 +265,11 @@ class TurnOffController extends GetxController {
   //               icon: '@mipmap/ic_launcher')));
   // }
 
-  Future loadUserData({required String token}) async {
-    isloadingData(true);
-    print(userToken.value);
-    final Response response = await TurnOffConnect().getUserProfileData(token);
-    print("Is Loading Data: " + response.body.toString());
-    // print(UserProfile.fromJson(jsonDecode(response)));
-    if (response.body['success'] == 1)
-      userData(UserProfile.fromJson(response.body['data']));
-      print(userData.value.selectedcompany);
-
-    isloadingData(false);
-  }
-
   void changeRemiderTime(int value) {
     reminderTime(value);
   }
 
-  void upDateUserSetting() {
+  void loadUSerSetting() {
     switch (userData.value.remindtime) {
       case 15:
         reminderTime(15);

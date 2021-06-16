@@ -14,6 +14,9 @@ class SettingPage extends StatelessWidget {
         initState: (_) {
           c.determinePosition();
         },
+        dispose: (_) {
+          c.mapContoller.close();
+        },
         builder: (x) => Scaffold(
               appBar: AppBar(
                   backgroundColor: Colors.transparent,
@@ -21,7 +24,16 @@ class SettingPage extends StatelessWidget {
                   iconTheme: IconThemeData(color: Colors.blueGrey),
                   actions: [
                     TextButton(
-                        onPressed: () {},
+                        onPressed: () => x
+                            .updateUserSetting()
+                            .whenComplete(() => x.isloadingData.value
+                                // ? Get.showSnackbar(GetBar(
+                                //     title: 'درحال ذخیره سازی ...',
+                                //   ))
+                                // : Get.showSnackbar(GetBar(
+                                //     title: 'ذخیره سازی انجام شد',
+                                //   ))
+                                ),
                         child: Text(
                           "ذخیره تنظیمات",
                           style: TextStyle(fontWeight: FontWeight.bold),
@@ -170,8 +182,16 @@ class SettingPage extends StatelessWidget {
                                     children: [
                                       Checkbox(
                                           value: x.isReciveMesseage.value,
-                                          onChanged: (v) =>
-                                              x.isReciveMesseage(v)),
+                                          onChanged: (v) {
+                                            x.isReciveMesseage(v);
+                                            x.userData.update((userData) {
+                                              if (v == true)
+                                                userData!.notetype.add("sms");
+                                              else
+                                                userData!.notetype
+                                                    .remove("sms");
+                                            });
+                                          }),
                                       Text('دریافت پیامک'),
                                       SizedBox(
                                         width: 20,
@@ -198,8 +218,12 @@ class SettingPage extends StatelessWidget {
                                       Radio(
                                           value: 15,
                                           groupValue: x.reminderTime.value,
-                                          onChanged: (v) =>
-                                              x.changeRemiderTime(15)),
+                                          onChanged: (v) {
+                                            x.changeRemiderTime(15);
+                                            x.userData.update((userData) {
+                                              userData!.remindtime = 15;
+                                            });
+                                          }),
                                       Text(
                                         '15',
                                         style: TextStyle(fontSize: 20),
@@ -207,22 +231,34 @@ class SettingPage extends StatelessWidget {
                                       Radio(
                                           value: 30,
                                           groupValue: x.reminderTime.value,
-                                          onChanged: (v) =>
-                                              x.changeRemiderTime(30)),
+                                          onChanged: (v) {
+                                            x.changeRemiderTime(30);
+                                            x.userData.update((userData) {
+                                              userData!.remindtime = 30;
+                                            });
+                                          }),
                                       Text('30',
                                           style: TextStyle(fontSize: 20)),
                                       Radio(
                                           value: 60,
                                           groupValue: x.reminderTime.value,
-                                          onChanged: (v) =>
-                                              x.changeRemiderTime(60)),
+                                          onChanged: (v) {
+                                            x.changeRemiderTime(60);
+                                            x.userData.update((userData) {
+                                              userData!.remindtime = 60;
+                                            });
+                                          }),
                                       Text('60',
                                           style: TextStyle(fontSize: 20)),
                                       Radio(
                                           value: 120,
                                           groupValue: x.reminderTime.value,
-                                          onChanged: (v) =>
-                                              x.changeRemiderTime(120)),
+                                          onChanged: (v) {
+                                            x.changeRemiderTime(120);
+                                            x.userData.update((userData) {
+                                              userData!.remindtime = 120;
+                                            });
+                                          }),
                                       Text('120',
                                           style: TextStyle(fontSize: 20)),
                                     ],
