@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
@@ -37,7 +39,9 @@ class TurnOffConnect extends GetConnect {
   }
 
   Future updateUserData(userData) async {
-    final response = await post('$serverURL/users/update', userData);
+    print(jsonEncode(userData.value));
+    final response =
+        await post('$serverURL/users/update', jsonEncode(userData.value));
     return response;
   }
 }

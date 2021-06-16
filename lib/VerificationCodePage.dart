@@ -148,10 +148,12 @@ class VerificationCodePage extends StatelessWidget {
                                 RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(13.0),
                                     side: BorderSide(color: Colors.yellow)))),
-                        onPressed: () =>
-                            x.userVerificationCode.value.length == 4
-                                ? Get.offAll(HomePage())
-                                : null,
+                        onPressed: () {
+                          if (x.userVerificationCode.value.length == 4)
+                            x
+                                .checkVerificationCode()
+                                .then((value) => print("خطا در کد احراز هویت"));
+                        },
                         child: Text(
                           "ثبت و تایید",
                           textAlign: TextAlign.center,

@@ -80,6 +80,7 @@ class TurnOffMap extends StatelessWidget {
                               borderRadius: BorderRadius.circular(10)),
                           onPressed: () {
                             x.mapContoller.value.dispose();
+                            x.addNewAddress();
                             Get.back();
                           },
                           child: Text(

@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:turnoff/GetX/GetController.dart';
@@ -14,9 +15,6 @@ class SettingPage extends StatelessWidget {
         initState: (_) {
           c.determinePosition();
         },
-        dispose: (_) {
-          c.mapContoller.close();
-        },
         builder: (x) => Scaffold(
               appBar: AppBar(
                   backgroundColor: Colors.transparent,
@@ -24,16 +22,27 @@ class SettingPage extends StatelessWidget {
                   iconTheme: IconThemeData(color: Colors.blueGrey),
                   actions: [
                     TextButton(
-                        onPressed: () => x
-                            .updateUserSetting()
-                            .whenComplete(() => x.isloadingData.value
-                                // ? Get.showSnackbar(GetBar(
-                                //     title: 'درحال ذخیره سازی ...',
-                                //   ))
-                                // : Get.showSnackbar(GetBar(
-                                //     title: 'ذخیره سازی انجام شد',
-                                //   ))
-                                ),
+                        onPressed: () => x.updateUserSetting().whenComplete(
+                            () => !x.isloadingData.value
+                                ? Get.snackbar("اعلان", "",
+                                    backgroundColor:
+                                        Colors.green.withOpacity(0.7),
+                                    titleText: Icon(
+                                      Icons.add_reaction,
+                                      color: Colors.white,
+                                    ),
+                                    messageText: Text(
+                                      "تنظیمات شما با موفقیت ذخیره شد",
+                                      textAlign: TextAlign.center,
+                                      textDirection: TextDirection.rtl,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                          fontSize: 20),
+                                    ),
+                                    colorText: Colors.white,
+                                    snackPosition: SnackPosition.BOTTOM)
+                                : null),
                         child: Text(
                           "ذخیره تنظیمات",
                           style: TextStyle(fontWeight: FontWeight.bold),
@@ -85,42 +94,45 @@ class SettingPage extends StatelessWidget {
                                     return AddressCard(
                                       userAddress:
                                           x.userData.value.addresses[index],
+                                      index: index,
                                     );
                                   }))),
                       Visibility(
                           visible: x.userData.value.addresses.length < 4,
                           child: TextButton(
                               onPressed: () async {
-                                //x.determinePosition();
-                                // await Future.delayed(
-                                //     Duration(milliseconds: 300));
                                 if (x.isGPSEnable.value &&
                                     !x.isGPSDenied.value) {
+                                  await x.getNeshani(LatLng(
+                                      x.userPosition.value.latitude,
+                                      x.userPosition.value.longitude));
                                   x.userPosition.value.latitude != 0.0
-                                      ? await x.getNeshani(LatLng(
-                                          x.userPosition.value.latitude,
-                                          x.userPosition.value.longitude))
+                                      ? Get.defaultDialog(
+                                          title: 'آدرس کنونی موقعیت شما',
+                                          content: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8.0),
+                                              child: Text(
+                                                  '${x.neshani.value.state},${x.neshani.value.city}\n${x.neshani.value.addresses[0].formatted}',
+                                                  textAlign: TextAlign.center,
+                                                  textDirection:
+                                                      TextDirection.rtl)),
+                                          confirm: TextButton(
+                                              onPressed: () {
+                                                Get.back();
+                                                Get.to(TurnOffMap());
+                                              },
+                                              child:
+                                                  Text('انتخاب از روی نقشه')),
+                                          cancel: TextButton(
+                                              onPressed: () {
+                                                x.addNewAddress();
+                                                Get.back();
+                                              },
+                                              child: Text('تایید میکنم')))
                                       : Future.error(
                                           'خطا در دریافت نشانی از سرور نشان');
-                                  Get.defaultDialog(
-                                      title: 'آدرس کنونی موقعیت شما',
-                                      content: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 8.0),
-                                        child: Text(
-                                            '${x.neshani.value.state},${x.neshani.value.city}\n${x.neshani.value.addresses[0].formatted}',
-                                            textAlign: TextAlign.center,
-                                            textDirection: TextDirection.rtl),
-                                      ),
-                                      confirm: TextButton(
-                                          onPressed: () {
-                                            Get.back();
-                                            Get.to(TurnOffMap());
-                                          },
-                                          child: Text('انتخاب از روی نقشه')),
-                                      cancel: TextButton(
-                                          onPressed: () => Get.back(),
-                                          child: Text('تایید میکنم')));
                                 } else
                                   Get.defaultDialog(
                                       title: '!مشکل ریزی پیش آمده',
@@ -138,7 +150,9 @@ class SettingPage extends StatelessWidget {
                                           onPressed: () => Get.back(),
                                           child: Text('بستن')));
                               },
-                              child: Text(" + اضافه کردن آدرس جدید"))),
+                              child: x.isloadingData.value
+                                  ? CircularProgressIndicator()
+                                  : Text(" + اضافه کردن آدرس جدید"))),
                       Expanded(
                           flex: 3,
                           child: Container(
@@ -338,6 +352,12 @@ class SettingPage extends StatelessWidget {
                                       // ),
                                     ],
                                   ),
+                                  TextButton(
+                                      onPressed: () {
+                                        x.setTokeninPhone("").whenComplete(
+                                            () => SystemNavigator.pop());
+                                      },
+                                      child: Text("خروج از برنامه"))
                                 ],
                               )))
                     ],

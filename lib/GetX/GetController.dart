@@ -51,7 +51,7 @@ class TurnOffController extends GetxController {
           formattedAddress: "")
       .obs;
 
-  final userPosition = Position(
+  var userPosition = Position(
           longitude: 0.0,
           latitude: 0.0,
           timestamp: DateTime.now(),
@@ -69,7 +69,8 @@ class TurnOffController extends GetxController {
           notetype: [],
           remindtime: 15,
           selectedcompany: [],
-          status: "1")
+          status: "1",
+          userToken: "")
       .obs;
   final mapContoller = MapController().obs;
   final mapKey = UniqueKey();
@@ -90,50 +91,100 @@ class TurnOffController extends GetxController {
   Future checkMobile() async {
     Response mobileStatus =
         await TurnOffConnect().checkUserNumber(phoneRegContoller.value.text);
-    print(mobileStatus.body);
     Map<String, dynamic> result = mobileStatus.body;
     if (result['success'] == -1) {
       Get.off(VerificationCodePage());
     }
     if (result['success'] == 1) {
-      // print("Token Set in Phone : ${result['data']['userToken']}");
+      print(result['data']['userToken']);
       userData(UserProfile.fromJson(mobileStatus.body['data']));
       setTokeninPhone(result['data']['userToken'])
           .whenComplete(() => Get.off(HomePage()));
     }
   }
 
+// بررسی کد احراز هویت کاربر
+  Future checkVerificationCode() async {
+    Response check = await TurnOffConnect()
+        .checkOTP(phoneRegContoller.value.text, userVerificationCode.value);
+    Map<String, dynamic> result = check.body;
+    print(result);
+    if (result['success'] == -1)
+      Get.snackbar("اعلان", "",
+          backgroundColor: Colors.red.withOpacity(0.7),
+          titleText: Icon(
+            Icons.warning_amber_sharp,
+            color: Colors.white,
+          ),
+          messageText: Text(
+            "کد احراز هویت صحیح نیست دوباره تلاش کنید",
+            textAlign: TextAlign.center,
+            textDirection: TextDirection.rtl,
+            style: TextStyle(
+                fontWeight: FontWeight.bold, color: Colors.white, fontSize: 20),
+          ),
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM);
+    // اگر کد درست بود دوباره موبایل چک شود و وارد شود
+    if (result['success'] == 1) checkMobile();
+  }
+
 // خواندن اطلاعات از سرور بر اساس توکن
   Future loadUserData({required String token}) async {
     isloadingData(true);
-    print(userToken.value);
     final Response response = await TurnOffConnect().getUserProfileData(token);
     print("Is Loading Data: " + response.body.toString());
-    // print(UserProfile.fromJson(jsonDecode(response)));
     if (response.body['success'] == 1)
       userData(UserProfile.fromJson(response.body['data']));
-    print(userData.value.selectedcompany);
-
     isloadingData(false);
   }
 
 // به روزرسانی تنظیمات و اطلاعات کاربر در سرور
   Future updateUserSetting() async {
     isloadingData(true);
-    print(userData.value.notetype);
     final Response response = await TurnOffConnect().updateUserData(userData);
-
-    print(response.body);
-
     if (response.body['success'] == 1) {
       print("موفقیت آمیز بود");
       isloadingData(false);
     }
   }
 
+// ذخیره توکن در گوشی
   Future setTokeninPhone(String token) async {
     final SharedPreferences prefs = await _prefs;
     prefs.setString('token', token);
+  }
+
+// اضافه کردن آدرس جدید به لیست
+  addNewAddress() {
+    final UserLocation newLocation = UserLocation(
+        // lat: userPosition.value.latitude.toString(),
+        // lon: userPosition.value.longitude.toString()
+        lat: mapData.value.center.latitudeStr,
+        lon: mapData.value.center.longitudeStr);
+    final UserAddress newAddress = UserAddress(
+        province: neshani.value.state,
+        city: neshani.value.city,
+        local: neshani.value.municipalityZone,
+        street: neshani.value.routeName,
+        title: "بدون نام (ویرایش کنید)",
+        location: newLocation);
+    userData.update((userData) {
+      userData!.addresses.add(newAddress);
+    });
+  }
+
+  deleteAddress(int index) {
+    userData.update((userData) {
+      userData!.addresses.removeAt(index);
+    });
+  }
+
+  updateAddress(int index, String title) {
+    if (title.length == 0) title = 'بدون نام';
+    userData.update((userData) {
+      userData!.addresses[index].title = title;
+    });
   }
 
 //دسترسی به جی پی اس و گرفتن موقعیت کنونی گوشی
@@ -166,10 +217,12 @@ class TurnOffController extends GetxController {
 
 // دریافت نقطه به آدرس از نشان
   Future getNeshani(LatLng latlng) async {
+    isloadingData(true);
     Response locationName = await TurnOffConnect()
         .getLocationNameData(latlng.latitudeStr, latlng.longitudeStr);
     print(locationName.body);
     neshani.value = NeshanModel.fromJson(locationName.body);
+    isloadingData(false);
   }
 
 // به روز رسانی موقعیت نقشه

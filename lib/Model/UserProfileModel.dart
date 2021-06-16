@@ -6,15 +6,15 @@ UserProfile userProfileFromJson(String str) =>
 String userProfileToJson(UserProfile data) => json.encode(data.toJson());
 
 class UserProfile {
-  UserProfile({
-    required this.userphone,
-    required this.status,
-    required this.notetype,
-    required this.selectedcompany,
-    required this.charge,
-    required this.remindtime,
-    required this.addresses,
-  });
+  UserProfile(
+      {required this.userphone,
+      required this.status,
+      required this.notetype,
+      required this.selectedcompany,
+      required this.charge,
+      required this.remindtime,
+      required this.addresses,
+      required this.userToken});
 
   String userphone;
   String status;
@@ -23,6 +23,7 @@ class UserProfile {
   int charge;
   int remindtime;
   List<UserAddress> addresses;
+  String userToken;
 
   factory UserProfile.fromJson(Map<String, dynamic> json) => UserProfile(
         userphone: json["userphone"],
@@ -35,6 +36,7 @@ class UserProfile {
         remindtime: json["remindtime"],
         addresses: List<UserAddress>.from(
             jsonDecode(json["addresses"]).map((x) => UserAddress.fromJson(x))),
+        userToken: json["userToken"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -45,6 +47,7 @@ class UserProfile {
         "charge": charge,
         "remindtime": remindtime,
         "addresses": List<dynamic>.from(addresses.map((x) => x.toJson())),
+        "userToken": userToken,
       };
 }
 
