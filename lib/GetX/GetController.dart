@@ -278,6 +278,10 @@ class TurnOffController extends GetxController {
     getTokenFromPhone();
     getAdsData();
 
+    FirebaseMessaging.instance
+        .getToken()
+        .then((token) => print("FireBase Token is :" + token.toString()));
+
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
