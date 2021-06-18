@@ -15,31 +15,33 @@ class AddressCard extends StatelessWidget {
     final TextEditingController title = TextEditingController();
     return GetBuilder<TurnOffController>(
         builder: (_) => Card(
-              color: Colors.grey.shade200,
+              color: Colors.blue.shade50,
+              elevation: 0.0,
               child: ListTile(
                   title: Row(
                     children: [
                       Icon(
                         Icons.home,
-                        color: Colors.grey,
+                        color: Colors.deepOrange,
                         size: 15,
                       ),
                       Text(
                         userAddress.title,
-                        style: Get.textTheme.headline3,
+                        style: Get.textTheme.headline3!
+                            .copyWith(color: Colors.deepOrange),
                       ),
                       Spacer(),
                     ],
                   ),
                   subtitle: Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
+                    padding: const EdgeInsets.only(top: 5.0),
                     child: Container(
                       width: Get.width,
-                      height: 20,
+                      height: 16,
                       child: Marquee(
                         text:
                             '${userAddress.province}، ${userAddress.city}، ${userAddress.local} ، ${userAddress.street}',
-                        style: Get.textTheme.headline6,
+                        style: Get.textTheme.headline6!.copyWith(fontSize: 16),
                         crossAxisAlignment: CrossAxisAlignment.start,
                         // blankSpace: 5.0,
                         // pauseAfterRound: Duration(seconds: 1),
@@ -50,6 +52,8 @@ class AddressCard extends StatelessWidget {
                     ),
                   ),
                   trailing: IconButton(
+                      alignment: Alignment.centerLeft,
+                      padding: EdgeInsets.zero,
                       onPressed: () => Get.defaultDialog(
                           title: 'ویرایش آدرس',
                           content: Padding(

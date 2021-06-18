@@ -17,31 +17,32 @@ class LocationCards extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Icon(
-                      Icons.home,
-                      color: Colors.grey,
-                      size: 15,
-                    ),
-                    Text(
-                      address.title,
-                      style: Get.textTheme.headline3,
-                    ),
-                    Spacer(),
-                    Text(
-                      'اطلاع رسانی فعال',
-                      style: Get.textTheme.bodyText1,
-                    ),
-                    Icon(
-                      Icons.notifications_active_rounded,
-                      color: Colors.green,
-                      size: 16,
-                    ),
-                  ],
+                Container(
+                  padding: EdgeInsets.all(3),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    color: Colors.deepOrange.shade400,
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.home,
+                        color: Colors.white,
+                        size: 15,
+                      ),
+                      SizedBox(
+                        width: 4,
+                      ),
+                      Text(
+                        address.title,
+                        style: Get.textTheme.headline3!
+                            .copyWith(color: Colors.white, fontSize: 13),
+                      ),
+                    ],
+                  ),
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(vertical: 15),
+                  padding: EdgeInsets.only(top: 12, right: 8),
                   child: Text(
                     address.city + '،' + address.local + '،' + address.street,
                     style: Get.textTheme.headline6,
@@ -49,23 +50,24 @@ class LocationCards extends StatelessWidget {
                     maxLines: 1,
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 9),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.notifications_active_rounded,
-                        color: Colors.grey,
-                        size: 15,
-                      ),
-                      Text(
-                        'اعلان های قطعی برق در روز جاری',
-                        style: Get.textTheme.headline3,
-                      ),
-                      Spacer(),
-                    ],
-                  ),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.symmetric(vertical: 9),
+                //   child: Row(
+                //     children: [
+                //       Icon(
+                //         Icons.notifications_active_rounded,
+                //         color: Colors.grey,
+                //         size: 15,
+                //       ),
+                //       Text(
+                //         'اعلان های قطعی برق در روز جاری',
+                //         style: Get.textTheme.headline3,
+                //       ),
+                //       Spacer(),
+                //     ],
+                //   ),
+                // ),
+                Divider(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -76,13 +78,13 @@ class LocationCards extends StatelessWidget {
                             radius: 15,
                             backgroundImage:
                                 AssetImage('assets/images/bargh.png')),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 5.0),
-                          child: Text(
-                            'قطعی برق',
-                            style: TextStyle(fontSize: 12),
-                          ),
-                        )
+                        // Padding(
+                        //   padding: const EdgeInsets.only(top: 5.0),
+                        //   child: Text(
+                        //     'قطعی برق',
+                        //     style: TextStyle(fontSize: 12),
+                        //   ),
+                        // )
                       ],
                     ),
                     SizedBox(

@@ -1,11 +1,10 @@
 import 'dart:convert';
-
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class TurnOffConnect extends GetConnect {
-  final String serverURL = 'https://shifon.ir/';
+  // final String serverURL = 'https://shifon.ir';
   // final String serverURL = 'http://10.0.2.2:3000';
+  final String serverURL = 'http://192.168.1.100:3000';
 
   Future getUserProfileData(String token) async {
     final response =
@@ -42,6 +41,11 @@ class TurnOffConnect extends GetConnect {
     print(jsonEncode(userData.value));
     final response =
         await post('$serverURL/users/update', jsonEncode(userData.value));
+    return response;
+  }
+
+  Future getAds() async {
+    final response = await get('$serverURL/ads');
     return response;
   }
 }

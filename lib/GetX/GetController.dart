@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -5,11 +7,12 @@ import 'package:flutter_carousel_slider/carousel_slider.dart';
 import 'package:get/get.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:turnoff/Model/AdsModel.dart';
 import 'package:turnoff/Model/NeshanModel.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:turnoff/Model/UserProfileModel.dart';
 import 'package:turnoff/VerificationCodePage.dart';
-import 'package:turnoff/homePage.dart';
+import 'package:turnoff/HomePage.dart';
 import 'package:universe/universe.dart';
 // import '../main.dart';
 import 'ServerHandler.dart';
@@ -21,18 +24,14 @@ class TurnOffController extends GetxController {
   final isReciveNotification = true.obs;
   final isSystemActive = true.obs;
   final reminderTime = 15.obs;
-  final isloadingData = true.obs;
+  final isloadingData = false.obs;
   final isGPSEnable = true.obs;
   final isGPSDenied = false.obs;
   final userToken = ''.obs;
   final userVerificationCode = ''.obs;
   final phoneRegContoller = TextEditingController().obs;
   final sliderController = CarouselSliderController().obs;
-  final sliderURls = [
-    'https://img9.irna.ir/d/r2/2020/11/01/4/157696706.jpg',
-    'https://nirogahian.ir/wp-content/uploads/2020/05/230..jpg',
-    'https://mardommashad.ir/wp-content/uploads/2019/06/745292.jpg'
-  ].obs;
+  final adsSlider = <AdsModel>[].obs;
   final neshani = NeshanModel(
           status: "",
           neighbourhood: "",
@@ -83,24 +82,29 @@ class TurnOffController extends GetxController {
   Future getTokenFromPhone() async {
     final SharedPreferences prefs = await _prefs;
     final String token = (prefs.getString('token') ?? '');
-    userToken(token);
-    await loadUserData(token: token);
+    if (token != '') {
+      userToken(token);
+      await loadUserData(token: token);
+    }
   }
 
 // بررسی شماره موبایل در سرور
   Future checkMobile() async {
     Response mobileStatus =
         await TurnOffConnect().checkUserNumber(phoneRegContoller.value.text);
-    Map<String, dynamic> result = mobileStatus.body;
-    if (result['success'] == -1) {
-      Get.off(VerificationCodePage());
-    }
-    if (result['success'] == 1) {
-      print(result['data']['userToken']);
-      userData(UserProfile.fromJson(mobileStatus.body['data']));
-      setTokeninPhone(result['data']['userToken'])
-          .whenComplete(() => Get.off(HomePage()));
-    }
+    if (mobileStatus.status.code == 200) {
+      Map<String, dynamic> result = mobileStatus.body;
+      if (result['success'] == -1) {
+        Get.off(VerificationCodePage());
+      }
+      if (result['success'] == 1) {
+        print(result['data']['userToken']);
+        userData(UserProfile.fromJson(mobileStatus.body['data']));
+        setTokeninPhone(result['data']['userToken'])
+            .whenComplete(() => Get.off(HomePage()));
+      }
+    } else
+      print("خطا در اتصال به وب سرویس چک کردن موبایل");
   }
 
 // بررسی کد احراز هویت کاربر
@@ -109,7 +113,7 @@ class TurnOffController extends GetxController {
         .checkOTP(phoneRegContoller.value.text, userVerificationCode.value);
     Map<String, dynamic> result = check.body;
     print(result);
-    if (result['success'] == -1)
+    if (result['success'] == 0)
       Get.snackbar("اعلان", "",
           backgroundColor: Colors.red.withOpacity(0.7),
           titleText: Icon(
@@ -117,11 +121,11 @@ class TurnOffController extends GetxController {
             color: Colors.white,
           ),
           messageText: Text(
-            "کد احراز هویت صحیح نیست دوباره تلاش کنید",
+            result['message'],
             textAlign: TextAlign.center,
             textDirection: TextDirection.rtl,
             style: TextStyle(
-                fontWeight: FontWeight.bold, color: Colors.white, fontSize: 20),
+                fontWeight: FontWeight.bold, color: Colors.white, fontSize: 17),
           ),
           colorText: Colors.white,
           snackPosition: SnackPosition.BOTTOM);
@@ -131,12 +135,29 @@ class TurnOffController extends GetxController {
 
 // خواندن اطلاعات از سرور بر اساس توکن
   Future loadUserData({required String token}) async {
+    print("Run Load Data with Token $token");
     isloadingData(true);
     final Response response = await TurnOffConnect().getUserProfileData(token);
     print("Is Loading Data: " + response.body.toString());
     if (response.body['success'] == 1)
       userData(UserProfile.fromJson(response.body['data']));
     isloadingData(false);
+  }
+
+// دریافت اطلاعات اسلایدرها از سرور
+  Future getAdsData() async {
+    final Response response = await TurnOffConnect().getAds();
+    if (response.body['success'] == 1)
+      adsSlider(List<AdsModel>.from(
+          response.body['data'].map((x) => AdsModel.fromJson(x))));
+
+    if (response.body['success'] == 0)
+      adsSlider.add(AdsModel(
+          adsid: 1,
+          imageurl:
+              'https://barghnews.com/files/fa/news/1399/5/6/93160_449.jpg',
+          linkurl:
+              'https://barghnews.com/files/fa/news/1399/5/6/93160_449.jpg'));
   }
 
 // به روزرسانی تنظیمات و اطلاعات کاربر در سرور
@@ -255,6 +276,7 @@ class TurnOffController extends GetxController {
     super.onInit();
     //چک کردن توکن کاربر
     getTokenFromPhone();
+    getAdsData();
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;

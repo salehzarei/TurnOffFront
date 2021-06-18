@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:turnoff/homePage.dart';
+import 'package:turnoff/HomePage.dart';
 
 import 'GetX/GetController.dart';
 
@@ -46,6 +46,8 @@ class VerificationCodePage extends StatelessWidget {
                               textInputAction: TextInputAction.next,
                               keyboardType: TextInputType.number,
                               textAlign: TextAlign.center,
+                              onSubmitted: (v) => null,
+                              onEditingComplete: () => null,
                               onChanged: (v) {
                                 if (v.isNotEmpty)
                                   FocusScope.of(context).requestFocus(_focus1);
@@ -67,6 +69,8 @@ class VerificationCodePage extends StatelessWidget {
                               textInputAction: TextInputAction.next,
                               keyboardType: TextInputType.number,
                               textAlign: TextAlign.center,
+                              onSubmitted: (v) => null,
+                              onEditingComplete: () => null,
                               onChanged: (v) {
                                 if (v.isNotEmpty)
                                   FocusScope.of(context).requestFocus(_focus2);
@@ -90,6 +94,8 @@ class VerificationCodePage extends StatelessWidget {
                               textInputAction: TextInputAction.next,
                               keyboardType: TextInputType.number,
                               textAlign: TextAlign.center,
+                              onSubmitted: (v) => null,
+                              onEditingComplete: () => null,
                               onChanged: (v) {
                                 if (v.isNotEmpty)
                                   FocusScope.of(context).requestFocus(_focus3);
@@ -112,6 +118,12 @@ class VerificationCodePage extends StatelessWidget {
                               focusNode: _focus3,
                               keyboardType: TextInputType.number,
                               textAlign: TextAlign.center,
+                              onSubmitted: (v) => null,
+                              onEditingComplete: () {
+                                if (x.userVerificationCode.value.length == 4)
+                                  x.checkVerificationCode().then(
+                                      (value) => print("خطا در کد احراز هویت"));
+                              },
                               onChanged: (v) {
                                 if (v.isNotEmpty)
                                   x.userVerificationCode(_n01.text +

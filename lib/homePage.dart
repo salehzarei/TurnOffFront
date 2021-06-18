@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_carousel_slider/carousel_slider.dart';
 import 'package:flutter_carousel_slider/carousel_slider_indicators.dart';
 import 'package:get/get.dart';
+import 'package:turnoff/GiftsPage.dart';
 
 import 'GetX/GetController.dart';
 import 'SettingPage.dart';
@@ -22,45 +23,29 @@ class HomePage extends StatelessWidget {
                     onPressed: () => Get.to(SettingPage()),
                     icon: Icon(
                       Icons.settings,
-                      color: Get.theme.iconTheme.color,
+                      color: Colors.deepOrange,
                     )),
                 actions: [
                   GestureDetector(
-                    onTap: () {
-                      if (c.userData.value.status == '1')
-                        c.userData.update((userData) {
-                          userData!.status = '0';
-                        });
-                      else
-                        c.userData.update((userData) {
-                          userData!.status = '1';
-                        });
-                    },
+                    onTap: () => Get.to(GiftPages()),
                     child: Padding(
                       padding: const EdgeInsets.only(right: 10.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(
-                            // c.isSystemActive.value
-                            c.userData.value.status == '1'
-                                ? 'اطلاع رسانی فعال'
-                                : 'اطلاع رسانی غیرفعال',
+                            'جوایز و هدایا',
                             textAlign: TextAlign.right,
                             style: TextStyle(
-                                color: c.userData.value.status == '1'
-                                    ? Colors.green
-                                    : Colors.red,
+                                color: Colors.deepOrange,
+                                fontWeight: FontWeight.w700,
                                 fontSize: 16),
                           ),
-                          SizedBox(
-                            width: 3,
-                          ),
-                          Icon(
-                            Icons.power_settings_new_outlined,
-                            color: c.userData.value.status == '1'
-                                ? Colors.green
-                                : Colors.red,
+                          SizedBox(width: 5),
+                          Image.asset(
+                            'assets/images/presents.png',
+                            fit: BoxFit.fitHeight,
+                            height: 30,
                           ),
                         ],
                       ),
@@ -90,7 +75,7 @@ class HomePage extends StatelessWidget {
                                   unlimitedMode: true,
                                   slideBuilder: (index) {
                                     return CachedNetworkImage(
-                                      imageUrl: c.sliderURls[index],
+                                      imageUrl: c.adsSlider[index].imageurl,
 
                                       fit: BoxFit.cover,
 
@@ -98,7 +83,7 @@ class HomePage extends StatelessWidget {
                                       //     CircularProgressIndicator(),
                                     );
                                   },
-                                  itemCount: 3),
+                                  itemCount: c.adsSlider.length),
                             ),
                             Row(
                               children: [

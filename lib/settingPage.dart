@@ -17,10 +17,22 @@ class SettingPage extends StatelessWidget {
         },
         builder: (x) => Scaffold(
               appBar: AppBar(
-                  backgroundColor: Colors.transparent,
+                  backgroundColor: Colors.deepOrange,
                   elevation: 0.0,
-                  iconTheme: IconThemeData(color: Colors.blueGrey),
+                  //  iconTheme: IconThemeData(color: Colors.blueGrey),
                   actions: [
+                    //  Text(
+                    //         // c.isSystemActive.value
+                    //         c.userData.value.status == '1'
+                    //             ? 'اطلاع رسانی فعال'
+                    //             : 'اطلاع رسانی غیرفعال',
+                    //         textAlign: TextAlign.right,
+                    //         style: TextStyle(
+                    //             color: c.userData.value.status == '1'
+                    //                 ? Colors.green
+                    //                 : Colors.red,
+                    //             fontSize: 16),
+                    //       ),
                     TextButton(
                         onPressed: () => x.updateUserSetting().whenComplete(
                             () => !x.isloadingData.value
@@ -45,21 +57,26 @@ class SettingPage extends StatelessWidget {
                                 : null),
                         child: Text(
                           "ذخیره تنظیمات",
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, color: Colors.white),
                         ))
                   ],
                   centerTitle: true,
                   title: Text('تنظیمات من',
-                      style: TextStyle(color: Colors.blueGrey))),
+                      style: TextStyle(color: Colors.white))),
               body: Directionality(
                 textDirection: TextDirection.rtl,
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(10.0),
                   child: Column(
                     children: [
-                      Text(
-                        x.userData.value.userphone,
-                        style: Get.textTheme.headline1,
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Text(
+                          x.userData.value.userphone,
+                          style: Get.textTheme.headline1!
+                              .copyWith(color: Colors.deepOrange),
+                        ),
                       ),
                       Row(
                         children: [
@@ -82,7 +99,7 @@ class SettingPage extends StatelessWidget {
                         ],
                       ),
                       Expanded(
-                          flex: 3,
+                          flex: x.userData.value.addresses.length - 1,
                           child: Container(
                               padding: EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 10),
@@ -154,7 +171,9 @@ class SettingPage extends StatelessWidget {
                                   ? CircularProgressIndicator()
                                   : Text(" + اضافه کردن آدرس جدید"))),
                       Expanded(
-                          flex: 3,
+                          flex: x.userData.value.addresses.length > 3
+                              ? 3
+                              : x.userData.value.addresses.length,
                           child: Container(
                               padding: EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 10),
@@ -169,17 +188,19 @@ class SettingPage extends StatelessWidget {
                                             right: 5, left: 5),
                                         child: Text(
                                           'تنظیم اعلان ها',
-                                          style: Get.textTheme.headline5,
+                                          style: Get.textTheme.headline5!
+                                              .copyWith(
+                                                  color: Colors.deepOrange),
                                         ),
                                       ),
                                       Expanded(
                                           child: Container(
-                                        color: Colors.blueGrey,
+                                        color: Colors.deepOrange.shade200,
                                         height: 0.5,
                                       )),
                                       Icon(
                                         Icons.notifications_on_outlined,
-                                        color: Colors.blueGrey,
+                                        color: Colors.deepOrange.shade300,
                                       )
                                     ],
                                   ),
@@ -189,7 +210,7 @@ class SettingPage extends StatelessWidget {
                                     child: Text(
                                         'از چه طریق به شما اطلاع رسانی انجام شود ؟',
                                         style: TextStyle(
-                                            fontSize: 19,
+                                            fontSize: 16,
                                             fontWeight: FontWeight.bold)),
                                   ),
                                   Row(
@@ -222,9 +243,9 @@ class SettingPage extends StatelessWidget {
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 10, horizontal: 8),
                                     child: Text(
-                                        'چند دقیقه قبل قطعی اطلاع رسانی انجام شود؟',
+                                        'چند دقیقه قبل قطعی اطلاع رسانی به شما انجام شود؟',
                                         style: TextStyle(
-                                            fontSize: 19,
+                                            fontSize: 16,
                                             fontWeight: FontWeight.bold)),
                                   ),
                                   Row(
@@ -282,9 +303,9 @@ class SettingPage extends StatelessWidget {
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 10, horizontal: 8),
                                     child: Text(
-                                        'مایل به دریافت اطلاع رسانی کدام هستید؟',
+                                        'مایل به دریافت اطلاع رسانی کدام شرکت هستید؟',
                                         style: TextStyle(
-                                            fontSize: 19,
+                                            fontSize: 16,
                                             fontWeight: FontWeight.bold)),
                                   ),
                                   Row(
@@ -357,7 +378,11 @@ class SettingPage extends StatelessWidget {
                                         x.setTokeninPhone("").whenComplete(
                                             () => SystemNavigator.pop());
                                       },
-                                      child: Text("خروج از برنامه"))
+                                      child: Text(
+                                        "خروج از برنامه",
+                                        style:
+                                            TextStyle(color: Colors.deepOrange),
+                                      ))
                                 ],
                               )))
                     ],
