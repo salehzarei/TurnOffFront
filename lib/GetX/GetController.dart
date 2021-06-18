@@ -345,18 +345,23 @@ class TurnOffController extends GetxController {
   }
 
   void loadUSerSetting() {
+    print(userData.value.remindtime);
     switch (userData.value.remindtime) {
       case 15:
         reminderTime(15);
+        update();
         break;
       case 30:
         reminderTime(30);
+        update();
         break;
       case 60:
         reminderTime(60);
+        update();
         break;
       case 120:
         reminderTime(120);
+        update();
         break;
       default:
     }

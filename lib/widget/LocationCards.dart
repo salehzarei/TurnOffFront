@@ -20,9 +20,12 @@ class LocationCards extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.all(3),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    color: Colors.deepOrange.shade400,
-                  ),
+                      borderRadius: BorderRadius.circular(5),
+                      gradient: LinearGradient(
+                        colors: [Colors.white, Colors.red.shade400],
+                      )
+                      // color: Colors.red.shade400,
+                      ),
                   child: Row(
                     children: [
                       Icon(
@@ -75,7 +78,7 @@ class LocationCards extends StatelessWidget {
                       children: [
                         CircleAvatar(
                             backgroundColor: Colors.white,
-                            radius: 15,
+                            radius: 13,
                             backgroundImage:
                                 AssetImage('assets/images/bargh.png')),
                         // Padding(

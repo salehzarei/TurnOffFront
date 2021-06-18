@@ -14,6 +14,7 @@ class SettingPage extends StatelessWidget {
     return GetX<TurnOffController>(
         initState: (_) {
           c.determinePosition();
+          c.loadUSerSetting();
         },
         builder: (x) => Scaffold(
               appBar: AppBar(
@@ -99,8 +100,11 @@ class SettingPage extends StatelessWidget {
                         ],
                       ),
                       Expanded(
-                          flex: x.userData.value.addresses.length - 1,
+                          flex: x.userData.value.addresses.length < 2
+                              ? 1
+                              : x.userData.value.addresses.length - 1,
                           child: Container(
+                              height: 200,
                               padding: EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 10),
                               // color: Colors.amber,
@@ -173,7 +177,9 @@ class SettingPage extends StatelessWidget {
                       Expanded(
                           flex: x.userData.value.addresses.length > 3
                               ? 3
-                              : x.userData.value.addresses.length,
+                              : x.userData.value.addresses.length < 2
+                                  ? 6
+                                  : x.userData.value.addresses.length,
                           child: Container(
                               padding: EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 10),
