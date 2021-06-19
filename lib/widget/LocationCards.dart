@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:turnoff/Model/UserProfileModel.dart';
 
 class LocationCards extends StatelessWidget {
+  final UserAddress address;
+
+  const LocationCards({Key? key, required this.address}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -11,56 +15,62 @@ class LocationCards extends StatelessWidget {
             //  height: 208,
             margin: EdgeInsets.all(10),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Icon(
-                      Icons.home,
-                      color: Colors.grey,
-                      size: 15,
-                    ),
-                    Text(
-                      'محل سکونت خودم',
-                      style: Get.textTheme.headline3,
-                    ),
-                    Spacer(),
-                    Text(
-                      'اطلاع رسانی فعال',
-                      style: Get.textTheme.bodyText1,
-                    ),
-                    Icon(
-                      Icons.notifications_active_rounded,
-                      color: Colors.green,
-                      size: 16,
-                    ),
-                  ],
+                Container(
+                  padding: EdgeInsets.all(3),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      gradient: LinearGradient(
+                        colors: [Colors.white, Colors.red.shade400],
+                      )
+                      // color: Colors.red.shade400,
+                      ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.home,
+                        color: Colors.white,
+                        size: 15,
+                      ),
+                      SizedBox(
+                        width: 4,
+                      ),
+                      Text(
+                        address.title,
+                        style: Get.textTheme.headline3!
+                            .copyWith(color: Colors.white, fontSize: 13),
+                      ),
+                    ],
+                  ),
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(vertical: 15),
+                  padding: EdgeInsets.only(top: 12, right: 8),
                   child: Text(
-                    'خراسان رضوی، مشهد، ناحیه 12، رحمانیه 19، کوچه فرعی',
+                    address.city + '،' + address.local + '،' + address.street,
                     style: Get.textTheme.headline6,
                     overflow: TextOverflow.clip,
                     maxLines: 1,
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 9),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.notifications_active_rounded,
-                        color: Colors.grey,
-                        size: 15,
-                      ),
-                      Text(
-                        'اعلان های قطعی برق در روز جاری',
-                        style: Get.textTheme.headline3,
-                      ),
-                      Spacer(),
-                    ],
-                  ),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.symmetric(vertical: 9),
+                //   child: Row(
+                //     children: [
+                //       Icon(
+                //         Icons.notifications_active_rounded,
+                //         color: Colors.grey,
+                //         size: 15,
+                //       ),
+                //       Text(
+                //         'اعلان های قطعی برق در روز جاری',
+                //         style: Get.textTheme.headline3,
+                //       ),
+                //       Spacer(),
+                //     ],
+                //   ),
+                // ),
+                Divider(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -68,26 +78,28 @@ class LocationCards extends StatelessWidget {
                       children: [
                         CircleAvatar(
                             backgroundColor: Colors.white,
-                            radius: 15,
+                            radius: 13,
                             backgroundImage:
                                 AssetImage('assets/images/bargh.png')),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 5.0),
-                          child: Text(
-                            'قطعی برق',
-                            style: TextStyle(fontSize: 12),
-                          ),
-                        )
+                        // Padding(
+                        //   padding: const EdgeInsets.only(top: 5.0),
+                        //   child: Text(
+                        //     'قطعی برق',
+                        //     style: TextStyle(fontSize: 12),
+                        //   ),
+                        // )
                       ],
                     ),
-                    SizedBox(width: 10,),
+                    SizedBox(
+                      width: 10,
+                    ),
                     Row(children: [
                       Text(' امروز شنبه 1400/3/10',
                           style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              )),
-                              Text(' از ساعت 15:30 الی 16:30',
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          )),
+                      Text(' از ساعت 15:30 الی 16:30',
                           style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
@@ -137,9 +149,12 @@ class LocationCards extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 15.0),
-                  child: Text(
-                    'مشاهده اعلان های هفته جاری',
-                    style: TextStyle(color: Colors.blueGrey),
+                  child: Center(
+                    child: Text(
+                      'مشاهده اعلان های هفته جاری',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.blueGrey),
+                    ),
                   ),
                 ),
               ],

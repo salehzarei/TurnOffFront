@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,11 +7,12 @@ import 'package:flutter_carousel_slider/carousel_slider.dart';
 import 'package:get/get.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:turnoff/Model/AdsModel.dart';
 import 'package:turnoff/Model/NeshanModel.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:turnoff/Model/UserProfileModel.dart';
 import 'package:turnoff/VerificationCodePage.dart';
-import 'package:turnoff/homePage.dart';
+import 'package:turnoff/HomePage.dart';
 import 'package:universe/universe.dart';
 // import '../main.dart';
 import 'ServerHandler.dart';
@@ -22,18 +24,14 @@ class TurnOffController extends GetxController {
   final isReciveNotification = true.obs;
   final isSystemActive = true.obs;
   final reminderTime = 15.obs;
-  final isloadingData = true.obs;
+  final isloadingData = false.obs;
   final isGPSEnable = true.obs;
   final isGPSDenied = false.obs;
   final userToken = ''.obs;
   final userVerificationCode = ''.obs;
   final phoneRegContoller = TextEditingController().obs;
   final sliderController = CarouselSliderController().obs;
-  final sliderURls = [
-    'https://img9.irna.ir/d/r2/2020/11/01/4/157696706.jpg',
-    'https://nirogahian.ir/wp-content/uploads/2020/05/230..jpg',
-    'https://mardommashad.ir/wp-content/uploads/2019/06/745292.jpg'
-  ].obs;
+  final adsSlider = <AdsModel>[].obs;
   final neshani = NeshanModel(
           status: "",
           neighbourhood: "",
@@ -52,7 +50,7 @@ class TurnOffController extends GetxController {
           formattedAddress: "")
       .obs;
 
-  final userPosition = Position(
+  var userPosition = Position(
           longitude: 0.0,
           latitude: 0.0,
           timestamp: DateTime.now(),
@@ -70,7 +68,8 @@ class TurnOffController extends GetxController {
           notetype: [],
           remindtime: 15,
           selectedcompany: [],
-          status: 1)
+          status: "1",
+          userToken: "")
       .obs;
   final mapContoller = MapController().obs;
   final mapKey = UniqueKey();
@@ -83,29 +82,130 @@ class TurnOffController extends GetxController {
   Future getTokenFromPhone() async {
     final SharedPreferences prefs = await _prefs;
     final String token = (prefs.getString('token') ?? '');
-    userToken(token);
-    await loadUserData(token: token);
+    if (token != '') {
+      userToken(token);
+      await loadUserData(token: token);
+    }
   }
 
 // بررسی شماره موبایل در سرور
   Future checkMobile() async {
     Response mobileStatus =
         await TurnOffConnect().checkUserNumber(phoneRegContoller.value.text);
-    print(mobileStatus.body);
-    Map<String, dynamic> result = mobileStatus.body;
-    if (result['success'] == -1) {
-      Get.off(VerificationCodePage());
-    }
-    if (result['success'] == 1) {
-      print("Token Set in Phone : ${result['data']['userToken']}");
-      setTokeninPhone(result['data']['userToken'])
-          .whenComplete(() => Get.off(HomePage()));
+    if (mobileStatus.status.code == 200) {
+      Map<String, dynamic> result = mobileStatus.body;
+      if (result['success'] == -1) {
+        Get.off(VerificationCodePage());
+      }
+      if (result['success'] == 1) {
+        print(result['data']['userToken']);
+        userData(UserProfile.fromJson(mobileStatus.body['data']));
+        setTokeninPhone(result['data']['userToken'])
+            .whenComplete(() => Get.off(HomePage()));
+      }
+    } else
+      print("خطا در اتصال به وب سرویس چک کردن موبایل");
+  }
+
+// بررسی کد احراز هویت کاربر
+  Future checkVerificationCode() async {
+    Response check = await TurnOffConnect()
+        .checkOTP(phoneRegContoller.value.text, userVerificationCode.value);
+    Map<String, dynamic> result = check.body;
+    print(result);
+    if (result['success'] == 0)
+      Get.snackbar("اعلان", "",
+          backgroundColor: Colors.red.withOpacity(0.7),
+          titleText: Icon(
+            Icons.warning_amber_sharp,
+            color: Colors.white,
+          ),
+          messageText: Text(
+            result['message'],
+            textAlign: TextAlign.center,
+            textDirection: TextDirection.rtl,
+            style: TextStyle(
+                fontWeight: FontWeight.bold, color: Colors.white, fontSize: 17),
+          ),
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM);
+    // اگر کد درست بود دوباره موبایل چک شود و وارد شود
+    if (result['success'] == 1) checkMobile();
+  }
+
+// خواندن اطلاعات از سرور بر اساس توکن
+  Future loadUserData({required String token}) async {
+    print("Run Load Data with Token $token");
+    isloadingData(true);
+    final Response response = await TurnOffConnect().getUserProfileData(token);
+    print("Is Loading Data: " + response.body.toString());
+    if (response.body['success'] == 1)
+      userData(UserProfile.fromJson(response.body['data']));
+    isloadingData(false);
+  }
+
+// دریافت اطلاعات اسلایدرها از سرور
+  Future getAdsData() async {
+    final Response response = await TurnOffConnect().getAds();
+    if (response.body['success'] == 1)
+      adsSlider(List<AdsModel>.from(
+          response.body['data'].map((x) => AdsModel.fromJson(x))));
+
+    if (response.body['success'] == 0)
+      adsSlider.add(AdsModel(
+          adsid: 1,
+          imageurl:
+              'https://barghnews.com/files/fa/news/1399/5/6/93160_449.jpg',
+          linkurl:
+              'https://barghnews.com/files/fa/news/1399/5/6/93160_449.jpg'));
+  }
+
+// به روزرسانی تنظیمات و اطلاعات کاربر در سرور
+  Future updateUserSetting() async {
+    isloadingData(true);
+    final Response response = await TurnOffConnect().updateUserData(userData);
+    if (response.body['success'] == 1) {
+      print("موفقیت آمیز بود");
+      isloadingData(false);
     }
   }
 
+// ذخیره توکن در گوشی
   Future setTokeninPhone(String token) async {
     final SharedPreferences prefs = await _prefs;
     prefs.setString('token', token);
+  }
+
+// اضافه کردن آدرس جدید به لیست
+  addNewAddress() {
+    final UserLocation newLocation = UserLocation(
+        // lat: userPosition.value.latitude.toString(),
+        // lon: userPosition.value.longitude.toString()
+        lat: mapData.value.center.latitudeStr,
+        lon: mapData.value.center.longitudeStr);
+    final UserAddress newAddress = UserAddress(
+        province: neshani.value.state,
+        city: neshani.value.city,
+        local: neshani.value.municipalityZone,
+        street: neshani.value.routeName,
+        title: "بدون نام (ویرایش کنید)",
+        location: newLocation);
+    userData.update((userData) {
+      userData!.addresses.add(newAddress);
+    });
+  }
+
+  deleteAddress(int index) {
+    userData.update((userData) {
+      userData!.addresses.removeAt(index);
+    });
+  }
+
+  updateAddress(int index, String title) {
+    if (title.length == 0) title = 'بدون نام';
+    userData.update((userData) {
+      userData!.addresses[index].title = title;
+    });
   }
 
 //دسترسی به جی پی اس و گرفتن موقعیت کنونی گوشی
@@ -138,10 +238,12 @@ class TurnOffController extends GetxController {
 
 // دریافت نقطه به آدرس از نشان
   Future getNeshani(LatLng latlng) async {
+    isloadingData(true);
     Response locationName = await TurnOffConnect()
         .getLocationNameData(latlng.latitudeStr, latlng.longitudeStr);
     print(locationName.body);
     neshani.value = NeshanModel.fromJson(locationName.body);
+    isloadingData(false);
   }
 
 // به روز رسانی موقعیت نقشه
@@ -174,8 +276,11 @@ class TurnOffController extends GetxController {
     super.onInit();
     //چک کردن توکن کاربر
     getTokenFromPhone();
+    getAdsData();
 
-    // loadUserData().whenComplete(() => upDateUserSetting());
+    FirebaseMessaging.instance
+        .getToken()
+        .then((token) => print("FireBase Token is :" + token.toString()));
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
@@ -239,36 +344,28 @@ class TurnOffController extends GetxController {
   //               icon: '@mipmap/ic_launcher')));
   // }
 
-  Future loadUserData({required String token}) async {
-    isloadingData(true);
-    print(userToken.value);
-    final Response response = await TurnOffConnect().getUserProfileData(token);
-    print("Is Loading Data: " + response.body.toString());
-    // print(UserProfile.fromJson(jsonDecode(response)));
-    if (response.body['success'] == 1)
-      userData(UserProfile.fromJson(response.body['data']));
-      print(userData.value.selectedcompany);
-
-    isloadingData(false);
-  }
-
   void changeRemiderTime(int value) {
     reminderTime(value);
   }
 
-  void upDateUserSetting() {
+  void loadUSerSetting() {
+    print(userData.value.remindtime);
     switch (userData.value.remindtime) {
       case 15:
         reminderTime(15);
+        update();
         break;
       case 30:
         reminderTime(30);
+        update();
         break;
       case 60:
         reminderTime(60);
+        update();
         break;
       case 120:
         reminderTime(120);
+        update();
         break;
       default:
     }
