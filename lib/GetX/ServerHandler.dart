@@ -2,8 +2,8 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class TurnOffConnect extends GetConnect {
-//final String serverURL = 'https://shifon.ir/';
-  final String serverURL = 'http://10.0.2.2:3000';
+final String serverURL = 'https://shifon.ir/';
+ // final String serverURL = 'http://10.0.2.2:3000';
 
   Future getUserProfileData(String token) async {
     final response =
