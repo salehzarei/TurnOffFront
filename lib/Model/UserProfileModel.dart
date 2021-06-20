@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:get/get_connect/http/src/request/request.dart';
+
 UserProfile userProfileFromJson(String str) =>
     UserProfile.fromJson(json.decode(str));
 
@@ -14,16 +16,19 @@ class UserProfile {
       required this.charge,
       required this.remindtime,
       required this.addresses,
-      required this.userToken});
+      required this.userToken,
+      required this.firbaseToken,
+      });
 
   String userphone;
-  String status;
+  int status;
   List<String> notetype;
   List<String> selectedcompany;
   int charge;
   int remindtime;
   List<UserAddress> addresses;
   String userToken;
+  String firbaseToken;
 
   factory UserProfile.fromJson(Map<String, dynamic> json) => UserProfile(
         userphone: json["userphone"],
@@ -37,6 +42,7 @@ class UserProfile {
         addresses: List<UserAddress>.from(
             jsonDecode(json["addresses"]).map((x) => UserAddress.fromJson(x))),
         userToken: json["userToken"],
+        firbaseToken : json['firbaseToken']
       );
 
   Map<String, dynamic> toJson() => {
@@ -48,6 +54,7 @@ class UserProfile {
         "remindtime": remindtime,
         "addresses": List<dynamic>.from(addresses.map((x) => x.toJson())),
         "userToken": userToken,
+        "firbaseToken" :firbaseToken
       };
 }
 

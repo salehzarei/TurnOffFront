@@ -28,6 +28,7 @@ class TurnOffController extends GetxController {
   final isGPSEnable = true.obs;
   final isGPSDenied = false.obs;
   final userToken = ''.obs;
+  final firebaseToken = ''.obs;
   final userVerificationCode = ''.obs;
   final phoneRegContoller = TextEditingController().obs;
   final sliderController = CarouselSliderController().obs;
@@ -68,8 +69,9 @@ class TurnOffController extends GetxController {
           notetype: [],
           remindtime: 15,
           selectedcompany: [],
-          status: "1",
-          userToken: "")
+          status: 1,
+          userToken: "",
+          firbaseToken: "")
       .obs;
   final mapContoller = MapController().obs;
   final mapKey = UniqueKey();
@@ -162,6 +164,7 @@ class TurnOffController extends GetxController {
 
 // به روزرسانی تنظیمات و اطلاعات کاربر در سرور
   Future updateUserSetting() async {
+    loadUSerSetting();
     isloadingData(true);
     final Response response = await TurnOffConnect().updateUserData(userData);
     if (response.body['success'] == 1) {
@@ -278,9 +281,10 @@ class TurnOffController extends GetxController {
     getTokenFromPhone();
     getAdsData();
 
-    FirebaseMessaging.instance
-        .getToken()
-        .then((token) => print("FireBase Token is :" + token.toString()));
+    FirebaseMessaging.instance.getToken().then((token) {
+      print("FireBase Token is :" + token.toString());
+      firebaseToken(token);
+    });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
@@ -349,7 +353,12 @@ class TurnOffController extends GetxController {
   }
 
   void loadUSerSetting() {
-    print(userData.value.remindtime);
+    // اضافه کردن توکن فایربیس
+    userData.update((userData) {
+      userData!.firbaseToken = firebaseToken.value;
+      print(userData.firbaseToken);
+    });
+   
     switch (userData.value.remindtime) {
       case 15:
         reminderTime(15);

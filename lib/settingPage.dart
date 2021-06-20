@@ -14,7 +14,7 @@ class SettingPage extends StatelessWidget {
     return GetX<TurnOffController>(
         initState: (_) {
           c.determinePosition();
-          c.loadUSerSetting();
+        //  c.loadUSerSetting();
         },
         builder: (x) => Scaffold(
               appBar: AppBar(
