@@ -291,11 +291,12 @@ class TurnOffController extends GetxController {
       AndroidNotification? android = message.notification?.android;
       if (notification != null && android != null) {
         Get.dialog(AlertDialog(
-          title: Text(notification.title ?? ""),
+          backgroundColor: Colors.yellow.shade400,
+          title: Text(notification.title ?? "" ,textAlign: TextAlign.center,),
           content: SingleChildScrollView(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [Text(notification.body ?? "")],
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [Text(notification.body ?? "" , textAlign: TextAlign.center,)],
             ),
           ),
         ));
@@ -322,11 +323,12 @@ class TurnOffController extends GetxController {
       AndroidNotification? android = message.notification?.android;
       if (notification != null && android != null) {
         Get.dialog(AlertDialog(
-          title: Text(notification.title ?? ""),
+          backgroundColor: Colors.yellow.shade400,
+          title: Text(notification.title ?? "" , textAlign: TextAlign.center),
           content: SingleChildScrollView(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [Text(notification.body ?? "")],
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [Text(notification.body ?? "" , textAlign: TextAlign.center)],
             ),
           ),
         ));
