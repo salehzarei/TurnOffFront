@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:turnoff/UserScore.dart';
 
 class GiftPages extends StatelessWidget {
   const GiftPages({Key? key}) : super(key: key);
@@ -199,7 +200,7 @@ class GiftPages extends StatelessWidget {
                 //margin: EdgeInsets.only(top: 5),
                 padding: EdgeInsets.all(15),
                 color: Colors.deepOrange.shade50,
-                height: Get.height * 0.13,
+                height: Get.height * 0.17,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -258,7 +259,7 @@ class GiftPages extends StatelessWidget {
                           RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(13.0),
                               side: BorderSide(color: Colors.blue.shade100)))),
-                  onPressed: () {},
+                  onPressed: () => Get.to(UserScorePage()),
                   child: Text(
                     "مشاهده امتیازات و سوابق",
                     textAlign: TextAlign.center,

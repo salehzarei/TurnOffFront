@@ -69,7 +69,7 @@ class TurnOffController extends GetxController {
           notetype: [],
           remindtime: 15,
           selectedcompany: [],
-          status: 1,
+          status: "1",
           userToken: "",
           firbaseToken: "")
       .obs;
@@ -149,6 +149,7 @@ class TurnOffController extends GetxController {
 // دریافت اطلاعات اسلایدرها از سرور
   Future getAdsData() async {
     final Response response = await TurnOffConnect().getAds();
+    if (response.body == null) throw ("ارتباط با سرور برقرار نشد");
     if (response.body['success'] == 1)
       adsSlider(List<AdsModel>.from(
           response.body['data'].map((x) => AdsModel.fromJson(x))));
@@ -292,11 +293,19 @@ class TurnOffController extends GetxController {
       if (notification != null && android != null) {
         Get.dialog(AlertDialog(
           backgroundColor: Colors.yellow.shade400,
-          title: Text(notification.title ?? "" ,textAlign: TextAlign.center,),
+          title: Text(
+            notification.title ?? "",
+            textAlign: TextAlign.center,
+          ),
           content: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
-              children: [Text(notification.body ?? "" , textAlign: TextAlign.center,)],
+              children: [
+                Text(
+                  notification.body ?? "",
+                  textAlign: TextAlign.center,
+                )
+              ],
             ),
           ),
         ));
@@ -324,11 +333,13 @@ class TurnOffController extends GetxController {
       if (notification != null && android != null) {
         Get.dialog(AlertDialog(
           backgroundColor: Colors.yellow.shade400,
-          title: Text(notification.title ?? "" , textAlign: TextAlign.center),
+          title: Text(notification.title ?? "", textAlign: TextAlign.center),
           content: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
-              children: [Text(notification.body ?? "" , textAlign: TextAlign.center)],
+              children: [
+                Text(notification.body ?? "", textAlign: TextAlign.center)
+              ],
             ),
           ),
         ));
@@ -360,7 +371,7 @@ class TurnOffController extends GetxController {
       userData!.firbaseToken = firebaseToken.value;
       print(userData.firbaseToken);
     });
-   
+
     switch (userData.value.remindtime) {
       case 15:
         reminderTime(15);

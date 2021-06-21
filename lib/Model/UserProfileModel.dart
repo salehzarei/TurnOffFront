@@ -8,20 +8,20 @@ UserProfile userProfileFromJson(String str) =>
 String userProfileToJson(UserProfile data) => json.encode(data.toJson());
 
 class UserProfile {
-  UserProfile(
-      {required this.userphone,
-      required this.status,
-      required this.notetype,
-      required this.selectedcompany,
-      required this.charge,
-      required this.remindtime,
-      required this.addresses,
-      required this.userToken,
-      required this.firbaseToken,
-      });
+  UserProfile({
+    required this.userphone,
+    required this.status,
+    required this.notetype,
+    required this.selectedcompany,
+    required this.charge,
+    required this.remindtime,
+    required this.addresses,
+    required this.userToken,
+    required this.firbaseToken,
+  });
 
   String userphone;
-  int status;
+  String status;
   List<String> notetype;
   List<String> selectedcompany;
   int charge;
@@ -31,19 +31,18 @@ class UserProfile {
   String firbaseToken;
 
   factory UserProfile.fromJson(Map<String, dynamic> json) => UserProfile(
-        userphone: json["userphone"],
-        status: json["status"],
-        // notetype: List<String>.from(json["notetype"].map((x) => x)),
-        notetype: List<String>.from(jsonDecode(json["notetype"]).map((x) => x)),
-        selectedcompany: List<String>.from(
-            jsonDecode(json["selectedcompany"]).map((x) => x)),
-        charge: json["charge"],
-        remindtime: json["remindtime"],
-        addresses: List<UserAddress>.from(
-            jsonDecode(json["addresses"]).map((x) => UserAddress.fromJson(x))),
-        userToken: json["userToken"],
-        firbaseToken : json['firbaseToken']
-      );
+      userphone: json["userphone"],
+      status: json["status"],
+      // notetype: List<String>.from(json["notetype"].map((x) => x)),
+      notetype: List<String>.from(jsonDecode(json["notetype"]).map((x) => x)),
+      selectedcompany:
+          List<String>.from(jsonDecode(json["selectedcompany"]).map((x) => x)),
+      charge: json["charge"],
+      remindtime: json["remindtime"],
+      addresses: List<UserAddress>.from(
+          jsonDecode(json["addresses"]).map((x) => UserAddress.fromJson(x))),
+      userToken: json["userToken"],
+      firbaseToken: json['firbaseToken']);
 
   Map<String, dynamic> toJson() => {
         "userphone": userphone,
@@ -54,7 +53,7 @@ class UserProfile {
         "remindtime": remindtime,
         "addresses": List<dynamic>.from(addresses.map((x) => x.toJson())),
         "userToken": userToken,
-        "firbaseToken" :firbaseToken
+        "firbaseToken": firbaseToken
       };
 }
 
